@@ -1,4 +1,6 @@
 set clipboard+=unnamedplus
+set relativenumber
+set number
 
 " no swap file
 set noswapfile
