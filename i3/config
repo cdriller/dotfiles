@@ -310,3 +310,9 @@ mode "$mode_display" {
     bindsym Escape mode "default"
 }
 bindsym $mod+a mode "$mode_display"
+
+exec --no-startup-id dunst
+
+# dunst keyboard shortcuts
+bindsym $mod+x exec dunstctl close-all
+bindsym Ctrl+BackSpace exec dunstctl history-pop
