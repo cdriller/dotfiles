@@ -9,6 +9,7 @@ call plug#begin("$XDG_CONFIG_HOME/nvim/plugged")
     Plug 'simnalamburt/vim-mundo'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-unimpaired'
+    Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 augroup filetype_csv
