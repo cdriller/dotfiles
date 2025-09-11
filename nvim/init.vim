@@ -1,3 +1,7 @@
+" ###########
+" # plugins #
+" ###########
+
 call plug#begin("$XDG_CONFIG_HOME/nvim/plugged")
     Plug 'chrisbra/csv.vim'
     Plug 'junegunn/fzf'
@@ -13,20 +17,13 @@ augroup filetype_csv
     autocmd BufWritePre *.csv :%UnArrangeColumn
 augroup END
 
-nnoremap <space> <nop>
-let mapleader = "\<space>"
+" ###########
+" # options #
+" ###########
 
 set clipboard+=unnamedplus
 set relativenumber
 set number
-
-" no swap file
-set noswapfile
-
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
 
 set undofile
 set undodir=$HOME/.config/nvim/undo
@@ -38,3 +35,21 @@ set softtabstop=4
 set shiftwidth=4
 set noexpandtab
 set autoindent
+
+" no swap file
+set noswapfile
+
+" ###########
+" # keymaps #
+" ###########
+
+nnoremap <space> <nop>
+let mapleader = "\<space>"
+
+noremap <leader>ut :MundoToggle<CR> " [u]ndo[t]ree
+
+" FZF
+noremap <leader>fb :Buffers<CR>
+noremap <leader>ff :Files<CR>
+noremap <leader>fF :FZF ~<CR>
+
