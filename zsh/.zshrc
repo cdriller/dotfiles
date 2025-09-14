@@ -54,3 +54,5 @@ then
 fi
 
 alias n='NVIM_APPNAME=nvim.clean nvim'
+
+ftmuxp
