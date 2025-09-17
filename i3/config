@@ -156,7 +156,6 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
 assign [class="firefox" instance="Navigator"] $web
-for_window [class = "firefox"] workspace $web
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
