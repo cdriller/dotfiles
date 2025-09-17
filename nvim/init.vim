@@ -79,6 +79,8 @@ noremap <leader>fF :FZF ~<CR>
 " # coc.vim #
 " ###########
 
+let g:coc_start_at_startup = 0
+
 " Coc extensions (need to install yarn or npm, both available in official repo of Arch Linux)
 let g:coc_global_extensions = [
             \ 'coc-snippets',
