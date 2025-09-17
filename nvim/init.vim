@@ -46,6 +46,8 @@ augroup END
 set clipboard+=unnamedplus
 set relativenumber
 set number
+set cursorline
+set culopt=both
 
 set undofile
 set undodir=$HOME/.config/nvim/undo
