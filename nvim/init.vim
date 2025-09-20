@@ -75,6 +75,7 @@ noremap <leader>ut :MundoToggle<CR> " [u]ndo[t]ree
 " FZF
 noremap <leader>fb :Buffers<CR>
 noremap <leader>ff :Files<CR>
+noremap <leader>fg :RG<CR>
 noremap <leader>fF :FZF ~<CR>
 
 " ###########
