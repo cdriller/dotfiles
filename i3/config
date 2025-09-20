@@ -325,5 +325,5 @@ bindsym $mod+x exec dunstctl close-all
 bindsym Ctrl+BackSpace exec dunstctl history-pop
 
 # change keyboard
-bindsym $mod+comma exec setxkbmap de-custom neo_ansi
+bindsym $mod+comma exec setxkbmap de prilepp_ansi
 bindsym $mod+period exec setxkbmap 'de(us)'
