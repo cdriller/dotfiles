@@ -9,29 +9,34 @@ call plug#begin("$XDG_CONFIG_HOME/nvim/plugged")
     Plug 'simnalamburt/vim-mundo'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-unimpaired'
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    " Collection of snippets
-    Plug 'honza/vim-snippets'
 
     " Compiler and linter
-    Plug 'neomake/neomake'
+    "Plug 'neomake/neomake'
 
-    " Theme gruvbox
-    Plug 'morhetz/gruvbox'
+    Plug 'morhetz/gruvbox' " Theme
 
-    " Status bar
-    Plug 'itchyny/lightline.vim'
+    Plug 'nvim-lualine/lualine.nvim' " Status bar
 
     "tmux
+    Plug 'christoomey/vim-tmux-navigator'
     Plug 'wellle/tmux-complete.vim'
     Plug 'tmux-plugins/vim-tmux'
     Plug 'tmux-plugins/vim-tmux-focus-events'
-    Plug 'christoomey/vim-tmux-navigator'
 
-    " Man pages in Neovim
-    Plug 'jez/vim-superman'
+    Plug 'jez/vim-superman' " Man pages in Neovim
+
+    Plug 'nvim-treesitter/nvim-treesitter'
+
+    Plug 'mason-org/mason.nvim'
+
+    Plug 'neovim/nvim-lspconfig'
 call plug#end()
+
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <M-h> :<C-U>TmuxNavigateLeft<cr>
+nnoremap <silent> <M-j> :<C-U>TmuxNavigateDown<cr>
+nnoremap <silent> <M-k> :<C-U>TmuxNavigateUp<cr>
+nnoremap <silent> <M-l> :<C-U>TmuxNavigateRight<cr>
 
 augroup filetype_csv
     autocmd!
@@ -70,27 +75,17 @@ set noswapfile
 nnoremap <space> <nop>
 let mapleader = "\<space>"
 
-noremap <leader>ut :MundoToggle<CR> " [u]ndo[t]ree
+nnoremap <silent> <leader><CR> :so %<CR>
+
+noremap <silent> <leader>ut :MundoToggle<CR> " [u]ndo[t]ree
 
 " FZF
-noremap <leader>fb :Buffers<CR>
-noremap <leader>ff :Files<CR>
-noremap <leader>fg :RG<CR>
-noremap <leader>fF :FZF ~<CR>
+noremap <silent> <leader>fb :Buffers<CR>
+noremap <silent> <leader><leader> :Files<CR>
+noremap <silent> <leader>fg :RG<CR>
+noremap <silent> <leader>ff :FZF ~<CR>
+noremap <silent> <leader>fF :FZF /<CR>
 
-" ###########
-" # coc.vim #
-" ###########
-
-let g:coc_start_at_startup = 0
-
-" Coc extensions (need to install yarn or npm, both available in official repo of Arch Linux)
-let g:coc_global_extensions = [
-            \ 'coc-snippets',
-            \ 'coc-css', 
-            \ 'coc-html',
-            \ 'coc-json', 
-            \]
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -118,58 +113,6 @@ else
     set signcolumn=yes
 endif
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-if has('nvim')
-    inoremap <silent><expr> <c-space> coc#refresh()
-else
-    inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-"###########
-"# Neomake #
-"###########
-
-" Needs to install shellcheck and vint: `sudo pacman -S shellcheck vint`
-
-" Neomake signs in the gutter
-let g:neomake_error_sign = {'text': '', 'texthl': 'NeomakeErrorSign'}
-let g:neomake_warning_sign = {
-            \   'text': '',
-            \   'texthl': 'NeomakeWarningSign',
-            \ }
-let g:neomake_message_sign = {
-            \   'text': '',
-            \   'texthl': 'NeomakeWarningSign',
-            \ }
-let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
-
-" update neomake when save file
-call neomake#configure#automake('w')
-
-command! -bang -nargs=* -complete=file Make NeomakeProject <args>
-
-" Enable linters
-let g:neomake_sh_enabled_makers = ['shellcheck']
-"let g:neomake_vim_enabled_makers = ['vint']
 
 "###########
 "# Gruvbox #
@@ -177,10 +120,103 @@ let g:neomake_sh_enabled_makers = ['shellcheck']
 
 autocmd vimenter * ++nested colorscheme gruvbox 
 
-"#############
-"# lightline #
-"#############
+" ##############
+" # Treesitter #
+" ##############
+lua << EOF
+require'nvim-treesitter.configs'.setup{
+    auto_install = true,
+    highlight = {
+	enable = true,
+	additional_vim_regex_highlighting = false
+    },
+    incremental_selection = {
+	enable = true,
+	keymaps = {
+	    init_selection = "gnn", -- set to `false` to disable one of the mappings
+	    node_incremental = "grn",
+	    scope_incremental = "grc",
+	    node_decremental = "grm",
+	},
+    },
+    indent ={
+	enable = true 
+    }
+}
+EOF
 
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ }
+lua << EOF
+
+local lualine_theme = require('lualine.themes.gruvbox')
+lualine_theme.insert = lualine_theme.normal
+lualine_theme.visual = lualine_theme.normal
+lualine_theme.replace = lualine_theme.normal
+lualine_theme.command = lualine_theme.normal
+lualine_theme.inactive = lualine_theme.normal
+
+require('lualine').setup {
+    options = {
+	icons_enabled = true,
+	theme = lualine_theme ,
+	component_separators = { left = '', right = ''},
+	section_separators = { left = '', right = ''},
+	disabled_filetypes = {
+	    statusline = {},
+	    winbar = {},
+	},
+	ignore_focus = {},
+	always_divide_middle = false,
+	always_show_tabline = true,
+	globalstatus = true,
+	refresh = {
+	    statusline = 1000,
+	    tabline = 1000,
+	    winbar = 1000,
+	    refresh_time = 16, -- ~60fps
+	    events = {
+		'WinEnter',
+		'BufEnter',
+		'BufWritePost',
+		'SessionLoadPost',
+		'FileChangedShellPost',
+		'VimResized',
+		'Filetype',
+		'CursorMoved',
+		'CursorMovedI',
+		'ModeChanged',
+		},
+	}
+	},
+	sections = {
+	    -- lualine_a = {{'mode', fmt=function(str) return str:sub(1,1) end}},
+	    lualine_a = {},
+	    lualine_b = { 'branch', {'filename', newfile_status = true }},
+	    lualine_c = { 'filetype', 'fileformat',  'encoding', 'filesize', '%=', 'diff', 'diagnostics', 'lsp_status'},
+	    lualine_x = { 'location', '%L'},
+	    lualine_y = {} ,
+	    lualine_z = {},
+	    },
+	inactive_sections = {
+	    lualine_a = {},
+	    lualine_b = {},
+	    lualine_c = {'filename'},
+	    lualine_x = {},
+	    lualine_y = {},
+	    lualine_z = {}
+	},
+	tabline = {},
+	winbar = {},
+	inactive_winbar = {},
+	extensions = {'fzf', 'mundo', 'mason', 'fugitive', 'man'}
+}
+EOF
+
+lua << EOF
+    require("mason").setup()
+EOF
+
+lua << EOF
+    vim.lsp.enable('vimls')
+    vim.lsp.enable('lua_ls')
+EOF
+    
