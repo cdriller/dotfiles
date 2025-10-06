@@ -44,7 +44,7 @@ map('n', '<M-l>', ':<C-U>TmuxNavigateRight<CR>', { silent = true, noremap = true
 -- ###########
 
 -- Clipboard
-vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
+vim.opt.clipboard:append("unnamedplus")
 
 -- Line numbers and cursor
 vim.wo.relativenumber = true
