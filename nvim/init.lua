@@ -29,7 +29,6 @@ call plug#end()
 
 -- Disable tmux navigator default mappings
 vim.g.tmux_navigator_no_mappings = 1
-
 -- Helper function for setting keymaps
 local map = vim.keymap.set
 
@@ -128,24 +127,24 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- ##############
 -- # Treesitter #
 -- ##############
-require'nvim-treesitter.configs'.setup{
-    auto_install = true,
-    highlight = {
-	enable = true,
-	additional_vim_regex_highlighting = false
+require 'nvim-treesitter.configs'.setup {
+  auto_install = true,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn", -- set to `false` to disable one of the mappings
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
     },
-    incremental_selection = {
-	enable = true,
-	keymaps = {
-	    init_selection = "gnn", -- set to `false` to disable one of the mappings
-	    node_incremental = "grn",
-	    scope_incremental = "grc",
-	    node_decremental = "grm",
-	},
-    },
-    indent ={
-	enable = true 
-    }
+  },
+  indent = {
+    enable = true
+  }
 }
 
 
@@ -157,110 +156,110 @@ lualine_theme.command = lualine_theme.normal
 lualine_theme.inactive = lualine_theme.normal
 
 require('lualine').setup {
-    options = {
-	icons_enabled = true,
-	theme = lualine_theme ,
-	component_separators = { left = '', right = ''},
-	section_separators = { left = '', right = ''},
-	disabled_filetypes = {
-	    statusline = {},
-	    winbar = {},
-	},
-	ignore_focus = {},
-	always_divide_middle = false,
-	always_show_tabline = true,
-	globalstatus = true,
-	refresh = {
-	    statusline = 1000,
-	    tabline = 1000,
-	    winbar = 1000,
-	    refresh_time = 16, -- ~60fps
-	    events = {
-		'WinEnter',
-		'BufEnter',
-		'BufWritePost',
-		'SessionLoadPost',
-		'FileChangedShellPost',
-		'VimResized',
-		'Filetype',
-		'CursorMoved',
-		'CursorMovedI',
-		'ModeChanged',
-		},
-	}
-	},
-	sections = {
-	    -- lualine_a = {{'mode', fmt=function(str) return str:sub(1,1) end}},
-	    lualine_a = {},
-	    lualine_b = { 'branch', {'filename', newfile_status = true }},
-	    lualine_c = { 'filetype', 'fileformat',  'encoding', 'filesize', '%=', 'diff', 'diagnostics', 'lsp_status'},
-	    lualine_x = { 'location', '%L'},
-	    lualine_y = {} ,
-	    lualine_z = {},
-	    },
-	inactive_sections = {
-	    lualine_a = {},
-	    lualine_b = {},
-	    lualine_c = {'filename'},
-	    lualine_x = {},
-	    lualine_y = {},
-	    lualine_z = {}
-	},
-	tabline = {},
-	winbar = {},
-	inactive_winbar = {},
-	extensions = {'fzf', 'mundo', 'mason', 'fugitive', 'man'}
+  options = {
+    icons_enabled = true,
+    theme = lualine_theme,
+    component_separators = { left = '', right = '' },
+    section_separators = { left = '', right = '' },
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = false,
+    always_show_tabline = true,
+    globalstatus = true,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+      refresh_time = 16, -- ~60fps
+      events = {
+        'WinEnter',
+        'BufEnter',
+        'BufWritePost',
+        'SessionLoadPost',
+        'FileChangedShellPost',
+        'VimResized',
+        'Filetype',
+        'CursorMoved',
+        'CursorMovedI',
+        'ModeChanged',
+      },
+    },
+  },
+  sections = {
+    -- lualine_a = {{'mode', fmt=function(str) return str:sub(1,1) end}},
+    lualine_a = {},
+    lualine_b = { 'branch', { 'filename', newfile_status = true } },
+    lualine_c = { 'filetype', 'fileformat', 'encoding', 'filesize', '%=', 'diff', 'diagnostics', 'lsp_status' },
+    lualine_x = { 'location', '%L' },
+    lualine_y = {},
+    lualine_z = {},
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = { 'filename' },
+    lualine_x = {},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = { 'fzf', 'mundo', 'mason', 'fugitive', 'man' }
 }
 
 require("mason").setup()
 
- vim.lsp.config('lua_ls', {
-   on_init = function(client)
-     if client.workspace_folders then
-       local path = client.workspace_folders[1].name
-       if
-         path ~= vim.fn.stdpath('config')
-         and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
-       then
-         return
-       end
-     end
+vim.lsp.config('lua_ls', {
+  on_init = function(client)
+    if client.workspace_folders then
+      local path = client.workspace_folders[1].name
+      if
+          path ~= vim.fn.stdpath('config')
+          and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+      then
+        return
+      end
+    end
 
-     client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-       runtime = {
-         -- Tell the language server which version of Lua you're using (most
-         -- likely LuaJIT in the case of Neovim)
-         version = 'LuaJIT',
-         -- Tell the language server how to find Lua modules same way as Neovim
-         -- (see `:h lua-module-load`)
-         path = {
-           'lua/?.lua',
-           'lua/?/init.lua',
-         },
-       },
-       -- Make the server aware of Neovim runtime files
-       workspace = {
-         checkThirdParty = false,
-         library = {
-           vim.env.VIMRUNTIME
-           -- Depending on the usage, you might want to add additional paths
-           -- here.
-           -- '${3rd}/luv/library'
-           -- '${3rd}/busted/library'
-         }
-         -- Or pull in all of 'runtimepath'.
-         -- NOTE: this is a lot slower and will cause issues when working on
-         -- your own configuration.
-         -- See https://github.com/neovim/nvim-lspconfig/issues/3189
-         -- library = {
-         --   vim.api.nvim_get_runtime_file('', true),
-         -- }
-       }
-     })
-   end,
-   settings = {
-     Lua = {}
-   }
- })
+    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most
+        -- likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+        -- Tell the language server how to find Lua modules same way as Neovim
+        -- (see `:h lua-module-load`)
+        path = {
+          'lua/?.lua',
+          'lua/?/init.lua',
+        },
+      },
+      -- Make the server aware of Neovim runtime files
+      workspace = {
+        checkThirdParty = false,
+        library = {
+          vim.env.VIMRUNTIME,
+          -- Depending on the usage, you might want to add additional paths
+          -- here.
+          '${3rd}/luv/library'
+          -- '${3rd}/busted/library'
+        }
+        -- Or pull in all of 'runtimepath'.
+        -- NOTE: this is a lot slower and will cause issues when working on
+        -- your own configuration.
+        -- See https://github.com/neovim/nvim-lspconfig/issues/3189
+        -- library = {
+        --   vim.api.nvim_get_runtime_file('', true),
+        -- }
+      }
+    })
+  end,
+  settings = {
+    Lua = {}
+  }
+})
 
 vim.lsp.enable('lua_ls')
