@@ -17,7 +17,6 @@ call plug#begin("$XDG_CONFIG_HOME/nvim/plugged")
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'wellle/tmux-complete.vim'
     Plug 'tmux-plugins/vim-tmux'
-    Plug 'tmux-plugins/vim-tmux-focus-events'
 
     Plug 'nvim-treesitter/nvim-treesitter'
 
