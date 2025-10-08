@@ -44,10 +44,6 @@ if [ $(command -v "fzf") ]; then
     source /usr/share/fzf/key-bindings.zsh
 fi
 
-bindkey -r '^l'
-bindkey -r '^g'
-bindkey -s '^g' clear-screen
-
 if [ "$(tty)" = "/dev/tty1" ];
 then
     pgrep i3 || exec startx "$XDG_CONFIG_HOME/X11/.xinitrc"
