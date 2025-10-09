@@ -46,7 +46,6 @@ vim.opt.clipboard:append("unnamedplus")
 -- Line numbers and cursor
 vim.wo.relativenumber = true
 vim.wo.number = true
-vim.wo.cursorline = true
 vim.wo.culopt = "both"
 
 -- Undo options
@@ -64,6 +63,9 @@ vim.o.list = true
 
 -- No swap file
 vim.o.swapfile = false
+
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
 -- ###########
 -- # keymaps #
