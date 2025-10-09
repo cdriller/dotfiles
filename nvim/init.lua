@@ -29,13 +29,12 @@ call plug#end()
 -- Disable tmux navigator default mappings
 vim.g.tmux_navigator_no_mappings = 1
 -- Helper function for setting keymaps
-local map = vim.keymap.set
 
 -- Map Alt+h/j/k/l to tmux navigator commands in normal mode, silently
-map('n', '<M-h>', ':<C-U>TmuxNavigateLeft<CR>', { silent = true, noremap = true })
-map('n', '<M-j>', ':<C-U>TmuxNavigateDown<CR>', { silent = true, noremap = true })
-map('n', '<M-k>', ':<C-U>TmuxNavigateUp<CR>', { silent = true, noremap = true })
-map('n', '<M-l>', ':<C-U>TmuxNavigateRight<CR>', { silent = true, noremap = true })
+vim.keymap.set('n', '<M-h>', ':<C-U>TmuxNavigateLeft<CR>', { silent = true, noremap = true })
+vim.keymap.set('n', '<M-j>', ':<C-U>TmuxNavigateDown<CR>', { silent = true, noremap = true })
+vim.keymap.set('n', '<M-k>', ':<C-U>TmuxNavigateUp<CR>', { silent = true, noremap = true })
+vim.keymap.set('n', '<M-l>', ':<C-U>TmuxNavigateRight<CR>', { silent = true, noremap = true })
 
 -- ###########
 -- # options #
