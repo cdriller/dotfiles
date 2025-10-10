@@ -110,13 +110,7 @@ vim.o.updatetime = 300
 -- Don't pass messages to |ins-completion-menu|.
 vim.o.shortmess = vim.o.shortmess .. "c"
 
--- Always show the signcolumn, otherwise it would shift the text each time diagnostics appear/become resolved.
-if vim.fn.has("patch-8.1.1564") == 1 then
-  -- Recently vim can merge signcolumn and number column into one
-  vim.o.signcolumn = "number"
-else
-  vim.o.signcolumn = "yes"
-end
+vim.o.signcolumn = 'yes:2'
 
 --###########
 --# Gruvbox #
@@ -295,8 +289,6 @@ vim.keymap.set('n', '<localleader>a', ':LspClangdSwitchSourceHeader<CR>', { sile
 
 require('gitsigns').setup{
   on_attach = function(bufnr)
-
-    vim.o.signcolumn = 'yes:2'
 
     local gitsigns = require('gitsigns')
 
