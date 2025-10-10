@@ -75,9 +75,11 @@ vim.o.smartcase = true
 
 -- Set leader key to space
 vim.g.mapleader = ' '
+vim.g.maplocalleader = '\\'
 
 -- Disable space in normal mode (nnoremap <space> <nop>)
 vim.keymap.set('n', '<space>', '<nop>', { noremap = true })
+vim.keymap.set('n', '\\', '<nop>', { noremap = true })
 
 -- Reload current file (nnoremap <silent> <leader><CR> :so %<CR>)
 vim.keymap.set('n', '<leader><CR>', ':so %<CR>', { noremap = true, silent = true })
@@ -286,6 +288,10 @@ vim.lsp.config('lua_ls', {
 })
 
 vim.lsp.enable('lua_ls')
+
+vim.lsp.enable('clangd')
+
+vim.keymap.set('n', '<localleader>a', ':LspClangdSwitchSourceHeader<CR>', { silent = true })
 
 require('gitsigns').setup{
   on_attach = function(bufnr)
