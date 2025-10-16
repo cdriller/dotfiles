@@ -32,3 +32,11 @@ ftmuxp() {
 scratchpad(){
     "$DOTFILES/zsh/scratchpad.sh"
 }
+
+# Only prepend a path if not already included in $PATH
+path_prepend() {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) export PATH="$1:$PATH" ;;
+  esac
+}
