@@ -1,3 +1,4 @@
+
 export XDG_CONFIG_HOME="$HOME/.config"
 
 export XDG_DATA_HOME="$XDG_CONFIG_HOME/local/share"
@@ -18,3 +19,7 @@ export DOTFILES="$HOME/dotfiles"
 
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+source "$DOTFILES/zsh/scripts.sh"
+
+path_prepend "/usr/local/texlive/2025/bin/x86_64-linux"
