@@ -88,21 +88,23 @@ vim.opt.rtp:prepend(lazypath)
 -- Setup lazy.nvim
 require("lazy").setup({
     spec = {
-
-        -- FZF
         {
-            "junegunn/fzf",
-            build = "./install --bin",
-        }, -- FZF requires build step
-        {
-            "junegunn/fzf.vim",
-            dependencies = { "junegunn/fzf" },
+            "ibhagwan/fzf-lua",
+            -- optional for icon support
+            dependencies = { "nvim-tree/nvim-web-devicons" },
             keys = {
-                { "<leader>fb",       ":Buffers<CR>", mode = "n", noremap = true, silent = true },
-                { "<leader><leader>", ":Files<CR>",   mode = "n", noremap = true, silent = true },
-                { "<leader>fg",       ":RG<CR>",      mode = "n", noremap = true, silent = true },
-                { "<leader>ff",       ":FZF ~<CR>",   mode = "n", noremap = true, silent = true },
-                { "<leader>fF",       ":FZF /<CR>",   mode = "n", noremap = true, silent = true },
+                { "<leader>fb",       function () require("fzf-lua").buffers() end,    mode = "n", noremap = true, silent = true },
+                { "<leader><leader>", function () FzfLua.global() end,                 mode = "n", noremap = true, silent = true },
+                { "<leader>fg",       function () FzfLua.grep() end,                   mode = "n", noremap = true, silent = true },
+                { "<leader>ff",       function () FzfLua.files({ cwd = "$HOME" }) end, mode = "n", noremap = true, silent = true },
+                { "<leader>fF",       function () FzfLua.files({ cwd = "/" }) end,     mode = "n", noremap = true, silent = true },
+            },
+            -- or if using mini.icons/mini.nvim
+            -- dependencies = { "nvim-mini/mini.icons" },
+            opts = {
+                winopts = {
+                    fullscreen = true,
+                },
             },
         },
         -- Git
