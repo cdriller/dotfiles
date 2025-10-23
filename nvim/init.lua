@@ -553,3 +553,10 @@ require("lazy").setup({
     checker = { enabled = true },
 })
 
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('my.lsp', {}),
+    callback = function(_)
+        vim.keymap.set("n", "grc", vim.lsp.buf.declaration)
+        vim.keymap.set("n", "grd", vim.lsp.buf.definition)
+    end
+})
