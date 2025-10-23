@@ -509,9 +509,3 @@ require("lazy").setup({
     checker = { enabled = true },
 })
 
--- TODO: create filetype configs
-vim.lsp.enable("lua_ls")
-
-vim.lsp.enable("clangd")
-vim.keymap.set("n", "<localleader>a", ":LspClangdSwitchSourceHeader<CR>", { silent = true })
-
