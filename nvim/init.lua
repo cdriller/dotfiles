@@ -510,7 +510,7 @@ require("lazy").setup({
     -- colorscheme that will be used when installing plugins.
     install = {
         missing = true,
-        colorscheme = { "habamax" },
+        colorscheme = { "gruvbox" },
     },
     -- automatically check for plugin updates
     checker = { enabled = true },
