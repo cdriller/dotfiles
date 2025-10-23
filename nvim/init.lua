@@ -430,6 +430,67 @@ require("lazy").setup({
                 },
             }
         },
+        {
+            "olimorris/codecompanion.nvim",
+            cmd = { "CodeCompanion", "CodeCompanionChat", "CodeCompanionActions" },
+            ---@module "codecompanion"
+            ---@type CodeCompanion
+            opts = {
+                extensions = {
+                    mcphub = {
+                        callback = "mcphub.extensions.codecompanion",
+                        opts = {
+                            make_vars = true,
+                            make_slash_commands = true,
+                            show_result_in_chat = true,
+                        },
+                    },
+                },
+            },
+            dependencies = {
+                "nvim-lua/plenary.nvim",
+                {
+                    "zbirenbaum/copilot.lua",
+                    cmd = "Copilot",
+                    event = "InsertEnter",
+                    config = true,
+                },
+                {
+                    "ravitemer/mcphub.nvim",
+                    dependencies = {
+                        "nvim-lua/plenary.nvim",
+                    },
+                    build = "npm install -g mcp-hub@latest", -- Installs `mcp-hub` node binary globally
+                    config = function ()
+                        require("mcphub").setup()
+                    end,
+                },
+                {
+                    "MeanderingProgrammer/render-markdown.nvim",
+                    ft = { "markdown", "codecompanion" },
+                },
+            },
+            keys = {
+                {
+                    "<C-a>",
+                    "<cmd>CodeCompanionActions<CR>",
+                    desc = "Open the action palette",
+                    mode = { "n", "v" },
+                },
+                {
+                    "<Leader>a",
+                    "<cmd>CodeCompanionChat Toggle<CR>",
+                   desc = "Toggle a chat buffer",
+                    mode = { "n", "v" },
+                },
+                {
+                    "<Leader>a",
+                    "<cmd>CodeCompanionChat Add<CR>",
+                    desc = "Add code to a chat buffer",
+                    mode = { "v" },
+                },
+            },
+        },
     },
     -- Configure any other settings here. See the documentation for more details.
     -- colorscheme that will be used when installing plugins.
