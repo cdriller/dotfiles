@@ -304,7 +304,9 @@ mode "$mode_display" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+a mode "$mode_display"
+bindsym $mod+m mode "$mode_display"
+
+bindsym $mod+a exec firefox chatgpt.com
 
 exec --no-startup-id dunst
 
