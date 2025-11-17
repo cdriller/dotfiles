@@ -430,10 +430,36 @@ require("lazy").setup({
         {
             "saghen/blink.cmp",
             build = "cargo build --release",
+            dependencies = {
+                "L3MON4D3/LuaSnip",
+                version = "v2.*",
+                config = function ()
+                    local ls = require("luasnip")
+                    local s = ls.snippet
+                    local t = ls.text_node
+                    local i = ls.insert_node
+
+                    ls.add_snippets("all", {
+                        s("ternary", {
+                            -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
+                            i(1, "cond"), t(" ? "), i(2, "then"), t(" ::::: "), i(3, "else"),
+                        }),
+                    })
+                end
+            },
             opts = {
+                snippets = { preset = 'luasnip' },
                 keymap = { preset = "enter" },
                 fuzzy = {
                     implementation = "prefer_rust_with_warning",
+                },
+                completion = {
+                    menu = {
+                        auto_show = true
+                    }
+                },
+                sources = {
+                    default = { "lsp", "path", "snippets", "buffer" },
                 },
             }
         },
@@ -460,7 +486,14 @@ require("lazy").setup({
                     "zbirenbaum/copilot.lua",
                     cmd = "Copilot",
                     event = "InsertEnter",
-                    config = true,
+                    opts = {
+                        filetypes = {
+                            ["*"] = false
+                        },
+                        nes = {
+                            enabled = false,
+                        }
+                    },
                 },
                 {
                     "ravitemer/mcphub.nvim",
@@ -468,9 +501,7 @@ require("lazy").setup({
                         "nvim-lua/plenary.nvim",
                     },
                     build = "npm install -g mcp-hub@latest", -- Installs `mcp-hub` node binary globally
-                    config = function ()
-                        require("mcphub").setup()
-                    end,
+                    opts = {}
                 },
                 {
                     "MeanderingProgrammer/render-markdown.nvim",
@@ -483,6 +514,12 @@ require("lazy").setup({
                     "<cmd>CodeCompanionActions<CR>",
                     desc = "Open the action palette",
                     mode = { "n", "v" },
+                },
+                {
+                    "<Leader>?",
+                    "<cmd>CodeCompanion /explain<CR>",
+                   desc = "Toggle a chat buffer",
+                    mode = { "v" },
                 },
                 {
                     "<Leader>a",
