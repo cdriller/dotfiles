@@ -8,6 +8,7 @@ mkdir -p "$XDG_CONFIG_HOME/nvim/undo"
 ln -sf "$DOTFILES/nvim/init.lua" "$XDG_CONFIG_HOME/nvim"
 ln -sf "$DOTFILES/nvim/lua" "$XDG_CONFIG_HOME/nvim/lua"
 ln -sf "$DOTFILES/nvim/after" "$XDG_CONFIG_HOME/nvim/after"
+ln -sf "$DOTFILES/nvim/snippets" "$XDG_CONFIG_HOME/nvim/snippets"
 
 #######
 # X11 #

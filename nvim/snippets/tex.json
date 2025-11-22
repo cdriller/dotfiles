@@ -1,0 +1,11 @@
+{
+    "Center Env": {
+        "prefix": "\\cent",
+        "body": [
+            "\\begin{center}",
+            "\t$0",
+            "\\end{center}"
+        ],
+        "description": "Center Environment"
+    }
+}

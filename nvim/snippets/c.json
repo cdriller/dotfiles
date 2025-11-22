@@ -1,0 +1,17 @@
+{
+    "Starter Template": {
+        "prefix": "start",
+        "body": [
+            "//hello world",
+            "#include <stdbool.h>",
+            "#include <stdio.h>",
+            "#include <stdlib.h>",
+            "",
+            "int main(int argc, char *argv[])",
+            "{$0",
+            "\treturn EXIT_SUCCESS;",
+            "}"
+        ],
+        "description": "Standard starter template for a tiny C program"
+    }
+}

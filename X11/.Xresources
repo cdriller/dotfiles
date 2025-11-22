@@ -34,3 +34,4 @@ URxvt*internalBorder: 4
 URxvt*scrollBar: false
 URxvt*saveLines: 5000
 
+xterm*font: xft:Hack Nerd Font Mono:size=13:style=regular:antialias=true

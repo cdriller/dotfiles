@@ -1243,14 +1243,14 @@ xkb_symbols "prilepp_base" {
     // The different layers and how to reach them
 
     // --------------------------------------------------------------
-    // Ebene 1: normal
-    // Ebene 2: Shift
-    // Ebene 3: RCtrl ("Mod three")
-    // Ebene 4: RAlt ("Mod four")  (for selecting, use also Shift)
-    // Ebene 5: Shift + RCtrl
-    // Ebene 6: ??
+    // Level 1: normal
+    // Level 2: Shift
+    // Level 3: RCtrl ("Mod three")
+    // Level 4: Shift + RCtrl
+    // Level 5: RAlt (Arrow Keys etc.)
+    // Level 6: Shift + RAlt(Level 5 + Selecting)
     // Locking uppercase: left Shift + right Shift
-    // Locking Ebene 4: ??
+    // Locking Ebene 4: not yet defined
 
 
     // Captions for the large table below
@@ -1283,7 +1283,7 @@ xkb_symbols "prilepp_base" {
     key <AE09> { [ 9,                       parenleft,     leftsinglequotemark,     U27E9,                   KP_Divide,               KP_Divide,               variation,               NoSymbol                 ] };
     key <AE10> { [ 0,                       parenright,    rightsinglequotemark,    zerosubscript,           KP_Multiply,             KP_Multiply,             emptyset,                NoSymbol                 ] };
 
-    key <AE11> { [ minus,                   emdash,                  NoSymbol,                U2011,                   KP_Subtract,             KP_Subtract,             hyphen,                  NoSymbol                 ] };
+    key <AE11> { [ minus,                   underscore,                  emdash,                U2011,                   KP_Subtract,             KP_Subtract,             hyphen,                  NoSymbol                 ] };
     key <AE12> { [ equal,                   plus,            dead_abovering,          dead_dasia,              dead_diaeresis,          NoSymbol,                dead_macron,             NoSymbol                 ] };
 
     // Top row
@@ -1291,14 +1291,14 @@ xkb_symbols "prilepp_base" {
     key.type[Group1] = "EIGHT_LEVEL_ALPHABETIC_WITH_LEVEL5_LOCK";
     key <AD01> { [ q,                       Q,                       ellipsis,                Greek_xi,                Prior,                   Prior,                   Greek_XI,                NoSymbol                 ] };
     key <AD02> { [ w,                       W,                       underscore,              NoSymbol,                BackSpace,               BackSpace,               radical,                 NoSymbol                 ] };
-    key <AD03> { [ e,                       E,                       bracketleft,             Greek_lambda,            Up,                      Up,                      Greek_LAMBDA,            NoSymbol                 ] };
+    key <AD03> { [ e,                       E,                       dead_acute,             Greek_lambda,            Up,                      Up,                      Greek_LAMBDA,            NoSymbol                 ] };
     key <AD04> { [ r,                       R,                       bracketright,            Greek_chi,               Delete,                  Delete,                  U2102,                   NoSymbol                 ] };
     key <AD05> { [ t,                       T,                       asciicircum,             Greek_omega,             Next,                    Next,                    Greek_OMEGA,             NoSymbol                 ] };
 
     key <AD06> { [ y,                       Y,                       exclam,                  Greek_kappa,             exclamdown,              NoSymbol,                multiply,                NoSymbol                 ] };
     key <AD07> { [ u,                       U,                       udiaeresis,                Udiaeresis,               KP_7,                    KP_7,                    Greek_PSI,               NoSymbol                 ] };
     key <AD08> { [ i,                       I,                       odiaeresis,                Odiaeresis,             KP_8,                    KP_8,                    Greek_GAMMA,             NoSymbol                 ] };
-    key <AD09> { [ o,                       O,                       equal,                   Greek_phi,               KP_9,                    KP_9,                    Greek_PHI,               NoSymbol                 ] };
+    key <AD09> { [ o,                       O,                       odiaeresis,                Odiaeresis,               KP_9,                    KP_9,                    Greek_PHI,               NoSymbol                 ] };
     key <AD10> { [ p,                       P,                       ampersand,               U03D5,                   KP_Add,                  KP_Add,                  U211A,                   NoSymbol                 ] };
 
     key <AD11> { [ bracketleft,     braceleft,                   U017F,                   Greek_finalsmallsigma,   U2212,                   NoSymbol,                jot,                     NoSymbol                 ] };
@@ -1354,8 +1354,7 @@ xkb_symbols "prilepp_ansi" {
     name[Group1]= "German (prilepp ansi)";
 
     include "shift(both_capslock)"
-    include "level3(switch)"
-    include "level5(lsgt_switch_lock)"
-    include "level5(ralt_switch_lock)"
+    include "level3(ralt_switch)"
+    include "level5(rwin_switch_lock)"
 };
 
