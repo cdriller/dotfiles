@@ -4,6 +4,40 @@ return {
     dependencies = { "L3MON4D3/LuaSnip" },
     event = "InsertEnter",
     opts = {
+        appearance = {
+            kind_icons = {
+                Text = "T",
+                Method = "F",
+                Function = "F",
+                Constructor = "F",
+
+                Field = "P",
+                Variable = "V",
+                Property = "P",
+
+                Class = "C",
+                Interface = "C",
+                Struct = "C",
+                Module = "M",
+
+                Unit = "󰪚",
+                Value = "󰦨",
+                Enum = "󰦨",
+                EnumMember = "󰦨",
+
+                Keyword = "󰻾",
+                Constant = "󰏿",
+
+                Snippet = "S",
+                Color = "󰏘",
+                File = "󰈔",
+                Reference = "󰬲",
+                Folder = "󰉋",
+                Event = "󱐋",
+                Operator = "󰪚",
+                TypeParameter = "󰬛",
+            },
+        },
         snippets = { preset = "luasnip" },
         keymap = { preset = "enter" },
         fuzzy = {
@@ -12,12 +46,16 @@ return {
         completion = {
             menu = {
                 auto_show = function()
+                    if vim.bo.filetype == "tex" then
+                        return false
+                    end
                     if vim.bo.filetype == "plaintex" then
                         return false
                     end
                     return true
                 end,
             },
+            documentation = { auto_show = true, auto_show_delay_ms = 500 },
         },
         sources = {
             default = { "lsp", "path", "snippets", "buffer" },
