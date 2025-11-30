@@ -298,7 +298,7 @@ bar {
 set $mode_display Config monitor resolution - Laptop config (l), Home config (h)
 
 mode "$mode_display" {
-    bindsym l exec --no-startup-id sh "$HOME/.config/X11/monitor.sh", mode "default"
+    bindsym l exec --no-startup-id sh "$HOME/.config/X11/laptop.sh", mode "default"
     bindsym h exec --no-startup-id sh "$HOME/.config/X11/home.sh", mode "default"
 
     # back to normal: Enter or Escape
