@@ -24,3 +24,4 @@ source "$DOTFILES/zsh/scripts.sh"
 
 path_prepend "/usr/local/texlive/2025/bin/x86_64-linux"
 path_prepend "$HOME/arm/bin"
+path_prepend "/opt/cisco/secureclient/bin"
