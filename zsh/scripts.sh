@@ -40,3 +40,8 @@ path_prepend() {
     *) export PATH="$1:$PATH" ;;
   esac
 }
+
+attach_tmux_session(){
+	"$DOTFILES/zsh/attach-tmux-session.sh"
+	zle reset-prompt
+}
