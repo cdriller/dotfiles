@@ -52,7 +52,7 @@ tiling_drag modifier titlebar
 bindsym $mod+Return exec urxvtc
 
 # kill focused window
-bindsym $mod+CTRL+Shift+q kill
+bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+space exec --no-startup-id dmenu_run
@@ -265,13 +265,20 @@ for_window [class="URxvt*"] border pixel 1
 
 # Terminal scratchpad
 for_window [instance="urxvt_scratchpad"] move to scratchpad, border none
-bindsym $mod+Shift+t [instance="urxvt_scratchpad"] scratchpad show
+bindsym $mod+semicolon [instance="urxvt_scratchpad"] scratchpad show
 exec "$DOTFILES/zsh/scratchpad.sh"
 
-# htop scratchpad
-for_window [instance="htop_scratchpad"] move to scratchpad, border none
-bindsym $mod+Shift+p [instance="htop_scratchpad"] scratchpad show
-exec urxvtc -name htop_scratchpad -e htop
+for_window [class="1Password"] move to scratchpad, border none
+bindsym $mod+p [class="1Password"] scratchpad show
+exec 1password
+
+for_window [class="bg_browser"] floating enable
+for_window [class="bg_browser"] move position 277 156
+for_window [class="bg_browser"] resize set 1366 768
+for_window [class="bg_browser"] move scratchpad
+for_window [class="bg_browser"] border pixel 3
+bindsym $mod+b [class="bg_browser"] scratchpad show
+exec --no-startup-id firefox --class="bg_browser" &
 
 # i3bar
 bar {
@@ -305,7 +312,7 @@ mode "$mode_display" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+m mode "$mode_display"
+bindsym $mod+shift+m mode "$mode_display"
 
 # bindsym $mod+a exec firefox chatgpt.com
 
