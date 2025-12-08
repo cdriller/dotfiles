@@ -14,6 +14,7 @@ return {
         { "<leader>ff",       function () FzfLua.files({ cwd = "$HOME" }) end, mode = "n", noremap = true, silent = true },
         { "<leader>fg",       function () FzfLua.git_status() end, mode = "n", noremap = true, silent = true },
         { "<leader>fF",       function () FzfLua.files({ cwd = "/" }) end,     mode = "n", noremap = true, silent = true },
+        { "<leader>sk",       function () FzfLua.keymaps() end,     mode = "n", noremap = true, silent = true },
     },
     opts = {
         winopts = {
