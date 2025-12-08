@@ -39,17 +39,21 @@ return {
             },
         },
         snippets = { preset = "luasnip" },
-        keymap = { preset = "enter" },
+        keymap = {
+            preset = "enter",
+            ['<Down>'] = {'show_and_insert', 'select_next', 'fallback' },
+        },
         fuzzy = {
             implementation = "prefer_rust_with_warning",
         },
         completion = {
             menu = {
                 auto_show = function()
-                    if vim.bo.filetype == "tex" then
-                        return false
-                    end
-                    if vim.bo.filetype == "plaintex" then
+                    local filetypes = {
+                        tex = true,
+                        plaintex = true
+                    }
+                    if filetypes[vim.bo.filetype] then
                         return false
                     end
                     return true
