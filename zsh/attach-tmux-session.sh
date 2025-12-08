@@ -8,24 +8,24 @@ tmuxp_configs=$(find "$TMUXP_DIR" -maxdepth 1 -type f \( -name "*.yml" -o -name 
     | sed -E 's/\.(yml|yaml)$//' \
 )
 
-combined=$(printf "%s\n" "$tmuxp_configs" | sed 's/^/TMUXP:\t /' ; \
-	   printf "%s\n" "$sessions" | sed 's/^/SESSION: /')
+combined=$(printf "%s\n" "$sessions" | sed 's/^/S: /'; \
+	   printf "%s\n" "$tmuxp_configs" | sed 's/^/C: /')
 
 [ -z "$combined" ] && echo "No tmux sessions or tmuxp configs found." && exit 1
 
-choice=$(printf "%s\n" "$sessions" | fzf --prompt="Choose session or tmuxp config > ")
+choice=$(printf "%s\n" "$combined" | fzf --prompt="Choose session or tmuxp config > ")
 
 [ -z "$choice" ] && exit 0
 
 type=$(echo "$choice" | cut -d' ' -f1)
 name=$(echo "$choice" | cut -d' ' -f2-)
 
-if [ "$type" = "SESSION:" ]; then
+if [ "$type" = "S:" ]; then
  if [ -n "$TMUX" ]; then
         echo "You're inside tmux. Detaching so tmuxp won't nest..."
         tmux switch-client -t "$name"
     fi
     tmux attach -t "$name"
 else
-    tmuxp load "$name"
+    tmuxp load -y "$name"
 fi

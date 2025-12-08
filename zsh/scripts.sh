@@ -43,5 +43,4 @@ path_prepend() {
 
 attach_tmux_session(){
 	"$DOTFILES/zsh/attach-tmux-session.sh"
-	zle reset-prompt
 }
