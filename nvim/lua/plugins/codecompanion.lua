@@ -8,7 +8,7 @@ return {
     },
     keys = {
         {
-            "<C-a>",
+            "<leader>aa",
             "<cmd>CodeCompanionActions<CR>",
             desc = "Open the action palette",
             mode = { "n", "v" },
@@ -20,13 +20,13 @@ return {
             mode = { "v" },
         },
         {
-            "<Leader>a",
+            "<Leader>ac",
             "<cmd>CodeCompanionChat Toggle<CR>",
             desc = "Toggle a chat buffer",
             mode = { "n", "v" },
         },
         {
-            "<Leader>a",
+            "<Leader>ac",
             "<cmd>CodeCompanionChat Add<CR>",
             desc = "Add code to a chat buffer",
             mode = { "v" },
