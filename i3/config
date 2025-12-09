@@ -272,14 +272,6 @@ for_window [class="1Password"] move to scratchpad, border none
 bindsym $mod+p [class="1Password"] scratchpad show
 exec 1password
 
-for_window [class="bg_browser"] floating enable
-for_window [class="bg_browser"] move position 277 156
-for_window [class="bg_browser"] resize set 1366 768
-for_window [class="bg_browser"] move scratchpad
-for_window [class="bg_browser"] border pixel 3
-bindsym $mod+b [class="bg_browser"] scratchpad show
-exec --no-startup-id firefox --class="bg_browser" &
-
 # i3bar
 bar {
     status_command i3status --config ~/.config/i3/i3status.conf
