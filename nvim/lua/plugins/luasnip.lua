@@ -6,6 +6,8 @@ return {
         local s = ls.snippet
         local t = ls.text_node
         local i = ls.insert_node
+        local extras = require("luasnip.extras")
+        local rep = extras.rep
         local fmt = require("luasnip.extras.fmt").fmt
 
         ls.add_snippets("all", {
@@ -27,7 +29,17 @@ return {
             })),
             s("log", fmt([[
             DPRINT_INFO(FILE_DEB_LEVEL, pre_debstr, " (%s): {}\n", __func__);
-            ]], { i(1, "message") }))
+            ]], { i(1, "message") })),
+            s("header", fmt([[
+            #ifndef {1}_H
+            #define {2}_H
+            {3}
+            #endif
+            ]], {
+                i(1, "macro"),
+                rep(1),
+                i(2, "content"),
+            })),
         })
     end,
 }
