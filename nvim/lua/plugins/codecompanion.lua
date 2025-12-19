@@ -14,7 +14,7 @@ return {
             mode = { "n", "v" },
         },
         {
-            "<Leader>?",
+            "<Leader>a?",
             "<cmd>CodeCompanion /explain<CR>",
             desc = "Toggle a chat buffer",
             mode = { "v" },
