@@ -5,3 +5,4 @@ evdev:name:AT Translated Set 2 keyboard:dmi:bvn*:bvr*:bd*:svnDell*:pn*:*
  KEYBOARD_KEY_9d=rightalt
  KEYBOARD_KEY_3a=space
  KEYBOARD_KEY_39=leftctrl
+ KEYBOARD_KEY_1d=space
