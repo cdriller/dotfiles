@@ -51,7 +51,9 @@ return {
                 auto_show = function()
                     local filetypes = {
                         tex = true,
-                        plaintex = true
+                        plaintex = true,
+                        codecompanion = true,
+                        gitcommit = true
                     }
                     if filetypes[vim.bo.filetype] then
                         return false
