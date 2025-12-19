@@ -1,0 +1,9 @@
+[user]
+	email = carlosdriller16@gmail.com
+	name = Carlos Driller
+[init]
+	defaultBranch = main
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+[advice]
+	forceDeleteBranch = false
