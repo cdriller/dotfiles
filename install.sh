@@ -6,6 +6,7 @@
 mkdir -p "$XDG_CONFIG_HOME/nvim"
 mkdir -p "$XDG_CONFIG_HOME/nvim/undo"
 ln -sf -t "$XDG_CONFIG_HOME/nvim" "$DOTFILES/nvim/init.lua"
+ln -sf -t "$XDG_CONFIG_HOME/nvim" "$DOTFILES/nvim/lazy-lock.json"
 ln -sf -t "$XDG_CONFIG_HOME/nvim" "$DOTFILES/nvim/lua"
 ln -sf -t "$XDG_CONFIG_HOME/nvim" "$DOTFILES/nvim/after"
 ln -sf -t "$XDG_CONFIG_HOME/nvim" "$DOTFILES/nvim/snippets"
