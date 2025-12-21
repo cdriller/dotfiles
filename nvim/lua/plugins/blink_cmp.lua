@@ -53,7 +53,8 @@ return {
                         tex = true,
                         plaintex = true,
                         codecompanion = true,
-                        gitcommit = true
+                        gitcommit = true,
+                        org = true
                     }
                     if filetypes[vim.bo.filetype] then
                         return false
