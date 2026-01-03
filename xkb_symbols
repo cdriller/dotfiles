@@ -1291,7 +1291,7 @@ xkb_symbols "prilepp_base" {
     key.type[Group1] = "EIGHT_LEVEL_ALPHABETIC_WITH_LEVEL5_LOCK";
     key <AD01> { [ q,                       Q,                       ellipsis,                Greek_xi,                Prior,                   Prior,                   Greek_XI,                NoSymbol                 ] };
     key <AD02> { [ w,                       W,                       underscore,              NoSymbol,                BackSpace,               BackSpace,               radical,                 NoSymbol                 ] };
-    key <AD03> { [ e,                       E,                       dead_acute,             Greek_lambda,            Up,                      Up,                      Greek_LAMBDA,            NoSymbol                 ] };
+    key <AD03> { [ e,                       E,                       dead_acute,             Greek_lambda,            dead_acute,                      Up,                      Greek_LAMBDA,            NoSymbol                 ] };
     key <AD04> { [ r,                       R,                       bracketright,            Greek_chi,               Delete,                  Delete,                  U2102,                   NoSymbol                 ] };
     key <AD05> { [ t,                       T,                       asciicircum,             Greek_omega,             Next,                    Next,                    Greek_OMEGA,             NoSymbol                 ] };
 
