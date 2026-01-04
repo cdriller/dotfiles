@@ -18,6 +18,8 @@
 
 ;; Enable transient mark mode
 (transient-mark-mode 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
 
 (global-set-key (kbd "M-l") 'windmove-right)
 (global-set-key (kbd "M-h") 'windmove-left)
