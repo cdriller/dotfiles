@@ -13,6 +13,14 @@
 ;; Enable Evil
 (require 'evil)
 (evil-mode 1)
+
+; evil spc, ret and tab do not any usefull that's why disable it so less important
+; keybindings fire
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "SPC") nil)
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-motion-state-map (kbd "TAB") nil))
+
 ;; Disable the splash screen (to enable it agin, replace the t with 0)
 (setq inhibit-splash-screen t)
 
@@ -33,6 +41,8 @@
 (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
 ;; Enable Org mode
 (require 'org)
+
+(setq org-return-follows-link  t)
 ;; Make Org mode work with files ending in .org
 ;; (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 ;; The above is the default in recent emacsen
