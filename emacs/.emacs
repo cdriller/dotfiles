@@ -35,10 +35,15 @@
 (global-set-key (kbd "M-j") 'windmove-down)
 
 ;;;;Org mode configuration
+(setq org-directory "~/org/")
+(setq org-default-notes-file (concat org-directory "/inbox.org"))
+(setq org-capture-templates
+      '(("t" "Todo" entry (file org-default-notes-file)
+         "* TODO %?\n  %i\n  %a")))
 ; source - https://stackoverflow.com/a
 ; Posted by Mingwei Zhang, modified by community. See post 'Timeline' for change history
 ; Retrieved 2026-01-04, License - CC BY-SA 4.0
-(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
+(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 ;; Enable Org mode
 (require 'org)
 
