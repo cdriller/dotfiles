@@ -34,6 +34,8 @@
 (global-set-key (kbd "M-k") 'windmove-up)
 (global-set-key (kbd "M-j") 'windmove-down)
 
+(global-set-key (kbd "M-a") 'org-agenda)
+(global-set-key (kbd "M-c") 'org-capture)
 ;;;;Org mode configuration
 (setq org-directory "~/org/")
 (setq org-default-notes-file (concat org-directory "/inbox.org"))
