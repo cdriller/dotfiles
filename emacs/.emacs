@@ -19,6 +19,11 @@
 ;; Enable transient mark mode
 (transient-mark-mode 1)
 
+(global-set-key (kbd "M-l") 'windmove-right)
+(global-set-key (kbd "M-h") 'windmove-left)
+(global-set-key (kbd "M-k") 'windmove-up)
+(global-set-key (kbd "M-j") 'windmove-down)
+
 ;;;;Org mode configuration
 ; source - https://stackoverflow.com/a
 ; Posted by Mingwei Zhang, modified by community. See post 'Timeline' for change history
