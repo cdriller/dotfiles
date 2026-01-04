@@ -20,6 +20,10 @@
 (transient-mark-mode 1)
 
 ;;;;Org mode configuration
+; source - https://stackoverflow.com/a
+; Posted by Mingwei Zhang, modified by community. See post 'Timeline' for change history
+; Retrieved 2026-01-04, License - CC BY-SA 4.0
+(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
 ;; Enable Org mode
 (require 'org)
 ;; Make Org mode work with files ending in .org
