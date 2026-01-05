@@ -36,6 +36,15 @@
 
 (global-set-key (kbd "M-a") 'org-agenda)
 (global-set-key (kbd "M-c") 'org-capture)
+
+;;;; Helm configuration
+(unless (package-installed-p 'helm)
+  (package-install 'helm))
+(require 'helm)
+(helm-mode 1) ; facultative.
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
 ;;;;Org mode configuration
 (setq org-directory "~/org/")
 (setq org-default-notes-file (concat org-directory "/inbox.org"))
@@ -46,6 +55,9 @@
 ; Posted by Mingwei Zhang, modified by community. See post 'Timeline' for change history
 ; Retrieved 2026-01-04, License - CC BY-SA 4.0
 (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+(setq org-refile-use-outline-path 'file)
+(setq org-outline-path-complete-in-steps nil)
 ;; Enable Org mode
 (require 'org)
 
@@ -58,7 +70,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
+ '(package-selected-packages '(evil helm)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
