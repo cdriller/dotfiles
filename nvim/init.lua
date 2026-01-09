@@ -47,6 +47,13 @@ vim.o.signcolumn = "yes:2"
 
 vim.o.completeopt = "popup,menuone,noinsert"
 
+-- Folding
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldnestmax = 4
+vim.opt.foldcolumn = "1"
+vim.opt.foldtext = ""
+
 -- ###########
 -- # Globals #
 -- ###########
