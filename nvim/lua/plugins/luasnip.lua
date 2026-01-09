@@ -41,5 +41,18 @@ return {
                 i(2, "content"),
             })),
         })
+
+        ls.add_snippets("tex", {
+            s("document", fmt([[
+            #include "lib/logging.h"
+
+            #ifdef DEB_ENABLE_GLOBAL
+            static const char *pre_debstr = "{}";
+            #endif
+            #define FILE_DEB_LEVEL DEB_LEVEL_VERB
+            ]], {
+                i(1, "filename"),
+            })),
+        })
     end,
 }
