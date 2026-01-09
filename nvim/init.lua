@@ -18,6 +18,7 @@ vim.o.undoreload = 10000
 
 -- Tabs and indentation
 vim.o.autoindent = true
+vim.o.shiftwidth = 0
 vim.o.list = true
 
 -- No swap file
