@@ -63,8 +63,10 @@ vim.keymap.set("n", "\\", "<nop>", { noremap = true })
 -- ###########
 -- # Keymaps #
 -- ###########
-vim.keymap.set("n", "<leader><CR>", ":so %<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<Tab>", ":b #<CR>", { silent = true })
+vim.keymap.set("n", "]]", "]]zz", { silent = true, noremap = true })
+vim.keymap.set("n", "[[", "[[zz", { silent = true, noremap = true })
+vim.keymap.set("n", "[]", "[]zz", { silent = true, noremap = true })
+vim.keymap.set("n", "][", "][zz", { silent = true, noremap = true })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
