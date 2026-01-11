@@ -150,10 +150,11 @@
 (menu-bar-mode -1)
 
 ;;;; keybindings
-(global-set-key (kbd "M-l") 'windmove-right)
-(global-set-key (kbd "M-h") 'windmove-left) ; TODO: gets overriden by org mode maps, has to be loaded later
-(global-set-key (kbd "M-k") 'windmove-up)
-(global-set-key (kbd "M-j") 'windmove-down)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "M-h") #'windmove-left)
+  (define-key org-mode-map (kbd "M-j") #'windmove-down)
+  (define-key org-mode-map (kbd "M-k") #'windmove-up)
+  (define-key org-mode-map (kbd "M-l") #'windmove-right))
 ; (global-set-key (kbd "M-a") 'org-agenda)
 ; (global-set-key (kbd "M-c") 'org-capture)
 ;
