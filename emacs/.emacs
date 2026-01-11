@@ -69,48 +69,91 @@
   (counsel-mode 1)
   :bind (:map ivy-minibuffer-map))
 
-;; We need something to manage the various projects we work on
-;; and for common functionality like project-wide searching, fuzzy file finding etc.
-;(use-package projectile
-;  :config
-;  (setq projectile-enable-caching t ;; Much better performance on large projects
-;        projectile-completion-system 'ivy)) ;; Ideally the minibuffer should aways look similar
+; We need something to manage the various projects we work on
+; and for common functionality like project-wide searching, fuzzy file finding etc.
+(use-package projectile
+  :ensure t
+  :pin melpa-stable
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ("s-p" . projectile-command-map)
+              ("C-c p" . projectile-command-map)))
 
-;; Counsel and projectile should work together.
-;(use-package counsel-projectile)
+; Counsel and projectile should work together.
+(use-package counsel-projectile
+  :ensure t
+  :pin melpa-stable)
 
+;; Company is the best Emacs completion system.
+(use-package company
+  :bind (("C-." . company-complete))
+  :custom
+  (company-idle-delay 0) ;; I always want completion, give it to me asap
+  (company-dabbrev-downcase nil "Don't downcase returned candidates.")
+  (company-show-numbers t "Numbers are helpful.")
+  (company-tooltip-limit 10 "The more the merrier.")
+  :config
+  (global-company-mode) ;; We want completion everywhere
 
+  ;; use numbers 0-9 to select company completion candidates
+  (let ((map company-active-map))
+    (mapc (lambda (x) (define-key map (format "%d" x)
+                        `(lambda () (interactive) (company-complete-number ,x))))
+          (number-sequence 0 9))))
 
+;; Flycheck is the newer version of flymake and is needed to make lsp-mode not freak out.
+(use-package flycheck
+  :config
+  (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ;; Download Evil
-; (unless (package-installed-p 'evil)
-;   (package-install 'evil))
-;
-; ;; Enable Evil
-; (require 'evil)
-; (evil-mode 1)
-;
-; ; evil spc, ret and tab do not any usefull that's why disable it so less important
-; ; keybindings fire
-; (with-eval-after-load 'evil-maps
-;   (define-key evil-motion-state-map (kbd "SPC") nil)
-;   (define-key evil-motion-state-map (kbd "RET") nil)
-;   (define-key evil-motion-state-map (kbd "TAB") nil))
-;
-; ;; Disable the splash screen (to enable it agin, replace the t with 0)
-; (setq inhibit-splash-screen t)
-;
-; ;; Enable transient mark mode
-; (transient-mark-mode 1)
-; (tool-bar-mode -1)
-; (menu-bar-mode -1)
-;
-; (global-set-key (kbd "M-l") 'windmove-right)
-; (global-set-key (kbd "M-h") 'windmove-left) ; TODO: gets overriden by org mode maps, has to be loaded later
-; (global-set-key (kbd "M-k") 'windmove-up)
-; (global-set-key (kbd "M-j") 'windmove-down)
-;
+;; Package for interacting with language servers
+(use-package lsp-mode
+  :commands lsp
+  :config
+  (setq lsp-prefer-flymake nil ;; Flymake is outdated
+ ;;       lsp-headerline-breadcrumb-mode nil)
+  )) ;; I don't like the symbols on the header a-la-vscode, remove this if you like them.
+
+(use-package npm)
+
+(use-package which-key
+  :config (which-key-mode t))
+
+(use-package magit)
+(use-package diff-hl)
+(global-diff-hl-mode)
+
+(use-package smartparens
+  :ensure smartparens  ;; install the package
+  :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+  :config
+  ;; load default config
+  (require 'smartparens-config))
+
+;;;;; Evil
+(unless (package-installed-p 'evil)
+  (package-install 'evil))
+(require 'evil)
+(evil-mode 1)
+
+; evil spc, ret and tab do not any usefull that's why disable it so less important
+; keybindings fire
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "SPC") nil)
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-motion-state-map (kbd "TAB") nil))
+
+;;;; UI
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+;;;; keybindings
+(global-set-key (kbd "M-l") 'windmove-right)
+(global-set-key (kbd "M-h") 'windmove-left) ; TODO: gets overriden by org mode maps, has to be loaded later
+(global-set-key (kbd "M-k") 'windmove-up)
+(global-set-key (kbd "M-j") 'windmove-down)
 ; (global-set-key (kbd "M-a") 'org-agenda)
 ; (global-set-key (kbd "M-c") 'org-capture)
 ;
@@ -122,23 +165,22 @@
 ; ;(global-set-key (kbd "M-x") 'helm-M-x)
 ; ;(global-set-key (kbd "C-x C-f") 'helm-find-files)
 ;
-; ;;;;Org mode configuration
-; (setq org-directory "~/org/")
-; (setq org-default-notes-file (concat org-directory "/inbox.org"))
-; (setq org-capture-templates
-;       '(("t" "Todo" entry (file org-default-notes-file)
-;          "* TODO %?\n  %i\n  %a")))
-; ; source - https://stackoverflow.com/a
-; ; Posted by Mingwei Zhang, modified by community. See post 'Timeline' for change history
-; ; Retrieved 2026-01-04, License - CC BY-SA 4.0
-; (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
-; (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-; (setq org-refile-use-outline-path 'file)
-; (setq org-outline-path-complete-in-steps nil)
-; ;; Enable Org mode
-; (require 'org)
-;
-; (setq org-return-follows-link  t)
+;;;;Org mode configuration
+(setq org-directory "~/org/")
+(setq org-default-notes-file (concat org-directory "/inbox.org"))
+(setq org-capture-templates
+      '(("t" "Todo" entry (file org-default-notes-file)
+         "* TODO %?\n  %i\n  %a")))
+; source - https://stackoverflow.com/a
+; Posted by Mingwei Zhang, modified by community. See post 'Timeline' for change history
+; Retrieved 2026-01-04, License - CC BY-SA 4.0
+(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+(setq org-refile-use-outline-path 'file)
+(setq org-outline-path-complete-in-steps nil)
+;; Enable Org mode
+(require 'org)
+(setq org-return-follows-link  t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
