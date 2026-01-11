@@ -5,7 +5,7 @@
   "copilot.lua": { "branch": "master", "commit": "c13f6f5147b80298301eb409991f28a991736cc3" },
   "friendly-snippets": { "branch": "main", "commit": "572f5660cf05f8cd8834e096d7b4c921ba18e175" },
   "fzf-lua": { "branch": "main", "commit": "a03d68e40eea835a1cdbd9f93049708dab3621e6" },
-  "gitsigns.nvim": { "branch": "main", "commit": "11b67da4935caafe1f75dd38a0aff2c78ea6df46" },
+  "gitsigns.nvim": { "branch": "main", "commit": "42d6aed4e94e0f0bbced16bbdcc42f57673bd75e" },
   "gruvbox": { "branch": "master", "commit": "697c00291db857ca0af00ec154e5bd514a79191f" },
   "harpoon": { "branch": "harpoon2", "commit": "87b1a3506211538f460786c23f98ec63ad9af4e5" },
   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
