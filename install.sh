@@ -65,6 +65,7 @@ ln -sf "$DOTFILES/zathura/zathurarc" "$XDG_CONFIG_HOME/zathura/zathurarc"
 ###########
 ln -sf -t "$HOME" "$DOTFILES/emacs/.spacemacs"
 ln -sf -t "$HOME" "$DOTFILES/emacs/.emacs"
+ln -sf -t "$HOME/.emacs.d/" "$DOTFILES/emacs/custom.el"
 
 #########
 # git   #
