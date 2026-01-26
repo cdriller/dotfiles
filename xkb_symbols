@@ -1238,7 +1238,8 @@ partial xkb_symbols "lld" {
 
 
 partial alphanumeric_keys modifier_keys keypad_keys
-xkb_symbols "prilepp_base" {
+xkb_symbols "prilepp_base"
+{
 
     // The different layers and how to reach them
 
@@ -1269,7 +1270,7 @@ xkb_symbols "prilepp_base" {
 
     // Number row
     // --------------------------------------------------------------
-    key <TLDE> { [ grave,         asciitilde,              U21BB,                   U02DE,                   dead_abovedot,           Pointer_EnableKeys,      dead_belowdot,           NoSymbol                 ] };
+    key <TLDE> { [ grave,         asciitilde,              U21BB,                   U02DE,                   dead_grave,           Pointer_EnableKeys,      dead_belowdot,           NoSymbol                 ] };
 
     key <AE01> { [ 1,                       exclam,                  onesuperior,             onesubscript,            ordfeminine,             NoSymbol,                notsign,                 NoSymbol                 ] };
     key <AE02> { [ 2,                       at,                 twosuperior,             twosubscript,            masculine,               NoSymbol,                logicalor,               NoSymbol                 ] };
@@ -1297,7 +1298,7 @@ xkb_symbols "prilepp_base" {
 
     key <AD06> { [ y,                       Y,                       exclam,                  Greek_kappa,             exclamdown,              NoSymbol,                multiply,                NoSymbol                 ] };
     key <AD07> { [ u,                       U,                       udiaeresis,                Udiaeresis,               udiaeresis,                    Udiaeresis,                    Greek_PSI,               NoSymbol                 ] };
-    key <AD08> { [ i,                       I,                       odiaeresis,                Odiaeresis,             KP_8,                    KP_8,                    Greek_GAMMA,             NoSymbol                 ] };
+    key <AD08> { [ i,                       I,                       odiaeresis,                Odiaeresis,             dead_circumflex,                    KP_8,                    Greek_GAMMA,             NoSymbol                 ] };
     key <AD09> { [ o,                       O,                       odiaeresis,                Odiaeresis,               odiaeresis,                    Odiaeresis,                    Greek_PHI,               NoSymbol                 ] };
     key <AD10> { [ p,                       P,                       ampersand,               U03D5,                   KP_Add,                  KP_Add,                  U211A,                   NoSymbol                 ] };
 
@@ -1327,7 +1328,7 @@ xkb_symbols "prilepp_base" {
     // --------------------------------------------------------------
     key <AB01> { [ z,                       Z,              numbersign,              NoSymbol,                Escape,                  Escape,                  union,                   NoSymbol                 ] };
     key <AB02> { [ x,                       X,              dollar,                  U03F5,                   Tab,                     Tab,                     intersection,            NoSymbol                 ] };
-    key <AB03> { [ c,                       C,              bar,                     Greek_eta,               Insert,                  Insert,                  U2135,                   NoSymbol                 ] };
+    key <AB03> { [ c,                       C,              bar,                     Greek_eta,               ccedilla,                  Ccedilla,                  U2135,                   NoSymbol                 ] };
     key <AB04> { [ v,                       V,                       asciitilde,              Greek_pi,                Return,                  Return,                  Greek_PI,                NoSymbol                 ] };
     key <AB05> { [ b,                       B,                       grave,                   Greek_zeta,              Undo,                    Redo,                    U2124,                   NoSymbol                 ] };
 
@@ -1347,7 +1348,8 @@ xkb_symbols "prilepp_base" {
 };
 
 partial alphanumeric_keys modifier_keys keypad_keys
-xkb_symbols "prilepp_ansi" {
+xkb_symbols "prilepp_ansi"
+{
 
     include "de(prilepp_base)"
 
