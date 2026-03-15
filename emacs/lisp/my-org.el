@@ -39,9 +39,8 @@
 (setq org-outline-path-complete-in-steps nil)
 (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
 (require 'org-habit)
-(setq org-todo-keywords '((sequence "ACTION(a)" "PROJECT(p)" "|" "DONE(d)")))
+(setq org-todo-keywords '((sequence "ACTION(a)" "PROJECT(p)" "|" "DONE(d)" "CANCELED(c)")))
 ;; Enable Org mode
-(require 'org)
 (setq org-return-follows-link  t)
 (setq org-archive-location "archive.org::")
 
