@@ -30,7 +30,7 @@ ftmuxp() {
 }
 
 scratchpad(){
-    "$DOTFILES/zsh/scratchpad.sh"
+    "$XDG_CONFIG_HOME/zsh/scratchpad.sh"
 }
 
 # Only prepend a path if not already included in $PATH
@@ -42,5 +42,5 @@ path_prepend() {
 }
 
 attach_tmux_session(){
-	"$DOTFILES/zsh/attach-tmux-session.sh"
+	"$XDG_CONFIG_HOME/zsh/attach-tmux-session.sh"
 }

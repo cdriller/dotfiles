@@ -268,7 +268,7 @@ for_window [class="URxvt*"] border pixel 1
 # Terminal scratchpad
 for_window [instance="urxvt_scratchpad"] move to scratchpad, border none
 bindsym $mod+semicolon [instance="urxvt_scratchpad"] scratchpad show
-exec "$DOTFILES/zsh/scratchpad.sh"
+exec "$XDG_CONFIG_HOME/zsh/scratchpad.sh"
 
 for_window [class="1Password"] move to scratchpad, border none
 bindsym $mod+p [class="1Password"] scratchpad show
