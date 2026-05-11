@@ -9,6 +9,10 @@ return {
         lualine_theme.command = lualine_theme.normal
         lualine_theme.inactive = lualine_theme.normal
 
+        local function is_diff_mode()
+            return vim.wo.diff and "DIFF" or ""
+        end
+
         return {
             options = {
                 icons_enabled = true,
@@ -44,7 +48,7 @@ return {
             },
             sections = {
                 lualine_a = {},
-                lualine_b = { "branch", { "filename", newfile_status = true } },
+                lualine_b = { "branch", is_diff_mode, { "filename", newfile_status = true } },
                 lualine_c = { "filetype", "fileformat", "encoding", "filesize", "%=", "diff", "diagnostics", "lsp_status" },
                 lualine_x = { "location", "%L" },
                 lualine_y = {},

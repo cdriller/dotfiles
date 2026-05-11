@@ -17,6 +17,23 @@ return {
             }),
         })
         ls.add_snippets("c", {
+            s("docstr", fmt([[
+            /**
+             * @brief {1}
+             * 
+             * {2}
+             *
+             * @param {3} {4}
+             *
+             * @return {5}
+             */
+            ]], {
+                    i(1, "one line summary"),
+                    i(2, "detailed explanation"),
+                    i(3, "param name"),
+                    i(4, "param desc"),
+                    i(5, "return value desc"),
+                })),
             s("bspfile", fmt([[
             #include "lib/logging.h"
 
@@ -40,9 +57,6 @@ return {
                 rep(1),
                 i(2, "content"),
             })),
-        })
-
-        ls.add_snippets("tex", {
             s("document", fmt([[
             #include "lib/logging.h"
 
@@ -52,7 +66,8 @@ return {
             #define FILE_DEB_LEVEL DEB_LEVEL_VERB
             ]], {
                 i(1, "filename"),
-            })),
+            }))
         })
+
     end,
 }

@@ -1,7 +1,11 @@
 return {
     "saghen/blink.cmp",
     build = "cargo build --release",
-    dependencies = { "L3MON4D3/LuaSnip" },
+    dependencies = {
+        "L3MON4D3/LuaSnip",
+        "saghen/blink.lib"
+    },
+    version = "1.*",
     event = "InsertEnter",
     opts = {
         appearance = {

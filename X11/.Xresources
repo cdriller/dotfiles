@@ -27,11 +27,11 @@
 *.color7: #e4e4e4
 *.color15: #ffffff
 
-URxvt*font: xft:Hack Nerd Font Mono:size=13:style=regular:antialias=true
+URxvt*font: xft:Hack Nerd Font Mono:size=12:style=regular:antialias=true
 URxvt*borderLess: false
 URxvt*externalBorder: 0
 URxvt*internalBorder: 4
 URxvt*scrollBar: false
 URxvt*saveLines: 5000
 
-xterm*font: xft:Hack Nerd Font Mono:size=13:style=regular:antialias=true
+xterm*font: xft:Hack Nerd Font Mono:size=12:style=regular:antialias=true

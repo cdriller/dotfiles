@@ -1355,7 +1355,6 @@ xkb_symbols "prilepp_ansi"
 
     name[Group1]= "German (prilepp ansi)";
 
-    include "shift(both_capslock)"
     include "level5(rwin_switch_lock)"
 };
 

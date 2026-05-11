@@ -74,6 +74,9 @@ vim.keymap.set("n", "]]", "]]zz", { silent = true, noremap = true })
 vim.keymap.set("n", "[[", "[[zz", { silent = true, noremap = true })
 vim.keymap.set("n", "[]", "[]zz", { silent = true, noremap = true })
 vim.keymap.set("n", "][", "][zz", { silent = true, noremap = true })
+vim.keymap.set("n", "[c", "[czz", { silent = true, noremap = true })
+vim.keymap.set("n", "]c", "]czz", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-]>", "<C-]>zz", { silent = true, noremap = true })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -109,6 +112,7 @@ require("lazy").setup({
     checker = { enabled = true },
 })
 
+
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('my.lsp', {}),
     callback = function(_)
@@ -116,3 +120,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set("n", "grd", vim.lsp.buf.definition)
     end
 })
+
+vim.schedule(function()
+    require "keys".global()
+end)
