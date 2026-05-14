@@ -36,8 +36,6 @@ exec --no-startup-id nm-applet
 
 # So I'm reminded to login to Nextcloud otherwise my files are out of sync
 exec --no-startup-id nextcloud
-# To directly get me in the zone
-exec --no-startup-id firefox pomofocus.io soundcloud.com
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
