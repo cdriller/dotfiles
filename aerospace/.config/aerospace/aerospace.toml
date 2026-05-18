@@ -1,0 +1,109 @@
+# Hyper Key = Cmd+Ctrl+Option (; on hold via Karabiner)
+#
+# Dokumentation: https://nikitabobko.github.io/AeroSpace/guide
+
+config-version = 2
+
+after-startup-command = []
+start-at-login = true
+
+# ─────────────────────────────────────────────
+# NORMALIZATION
+# ─────────────────────────────────────────────
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# ─────────────────────────────────────────────
+# LAYOUT
+# ─────────────────────────────────────────────
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'   # horizontal auf breiten, vertikal auf hohen Monitoren
+
+# ─────────────────────────────────────────────
+# MOUSE
+# ─────────────────────────────────────────────
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# ─────────────────────────────────────────────
+# GAPS
+# ─────────────────────────────────────────────
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 8
+outer.right      = 8
+outer.top        = 8
+outer.bottom     = 8
+
+# ─────────────────────────────────────────────
+# KEY MAPPING
+# ─────────────────────────────────────────────
+[key-mapping]
+preset = 'qwerty'
+
+# ─────────────────────────────────────────────
+# BINDINGS  (Hyper = cmd+ctrl+alt)
+# ─────────────────────────────────────────────
+[mode.main.binding]
+
+# — Fokus (vim-style) —
+cmd-ctrl-alt-h = 'focus left'
+cmd-ctrl-alt-j = 'focus down'
+cmd-ctrl-alt-k = 'focus up'
+cmd-ctrl-alt-l = 'focus right'
+
+# — Fenster verschieben —
+cmd-ctrl-alt-shift-h = 'move left'
+cmd-ctrl-alt-shift-j = 'move down'
+cmd-ctrl-alt-shift-k = 'move up'
+cmd-ctrl-alt-shift-l = 'move right'
+
+# — Workspaces wechseln —
+cmd-ctrl-alt-1 = 'workspace 1'
+cmd-ctrl-alt-2 = 'workspace 2'
+cmd-ctrl-alt-3 = 'workspace 3'
+cmd-ctrl-alt-4 = 'workspace 4'
+cmd-ctrl-alt-5 = 'workspace 5'
+cmd-ctrl-alt-6 = 'workspace 6'
+cmd-ctrl-alt-7 = 'workspace 7'
+cmd-ctrl-alt-8 = 'workspace 8'
+cmd-ctrl-alt-9 = 'workspace 9'
+
+# — Fenster auf Workspace verschieben —
+cmd-ctrl-alt-shift-1 = 'move-node-to-workspace 1'
+cmd-ctrl-alt-shift-2 = 'move-node-to-workspace 2'
+cmd-ctrl-alt-shift-3 = 'move-node-to-workspace 3'
+cmd-ctrl-alt-shift-4 = 'move-node-to-workspace 4'
+cmd-ctrl-alt-shift-5 = 'move-node-to-workspace 5'
+cmd-ctrl-alt-shift-6 = 'move-node-to-workspace 6'
+cmd-ctrl-alt-shift-7 = 'move-node-to-workspace 7'
+cmd-ctrl-alt-shift-8 = 'move-node-to-workspace 8'
+cmd-ctrl-alt-shift-9 = 'move-node-to-workspace 9'
+
+# — Layout —
+cmd-ctrl-alt-slash = 'layout tiles horizontal vertical'   # zwischen horizontal/vertikal wechseln
+cmd-ctrl-alt-comma = 'layout accordion horizontal vertical' # accordion mode
+
+# — Vollbild (AeroSpace-style, kein macOS fullscreen) —
+cmd-ctrl-alt-f = 'fullscreen'
+
+# — Zurück zum letzten Workspace —
+cmd-ctrl-alt-tab = 'workspace-back-and-forth'
+
+# — Fenster zwischen Monitoren verschieben —
+cmd-ctrl-alt-shift-tab = 'move-node-to-monitor next'
+
+# — Resize Mode aktivieren —
+cmd-ctrl-alt-r = 'mode resize'
+
+# ─────────────────────────────────────────────
+# RESIZE MODE
+# Mit Hyper+R aktivieren, mit Escape beenden
+# ─────────────────────────────────────────────
+[mode.resize.binding]
+h = 'resize width -50'
+l = 'resize width +50'
+k = 'resize height -50'
+j = 'resize height +50'
+esc = 'mode main'

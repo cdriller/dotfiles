@@ -49,8 +49,6 @@ then
     pgrep i3 || exec startx "$XDG_CONFIG_HOME/X11/.xinitrc"
 fi
 
-alias n='NVIM_APPNAME=nvim.clean nvim'
-
 if [ -z "$TMUX" ]; then
     tmux new-session -As scratchpad
 fi
