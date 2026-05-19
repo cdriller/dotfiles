@@ -9,8 +9,8 @@ source "$XDG_CONFIG_HOME/zsh/aliases"
 
 zmodload zsh/complist
 
-autoload -U compinit; compinit
-
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 # Autocomplete hidden files
 _comp_options+=(globdots)
 source "$XDG_CONFIG_HOME/zsh/external/completion.zsh"
@@ -34,13 +34,13 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey -e
 
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source "$XDG_CONFIG_HOME/zsh/external/bd.zsh"
 source "$XDG_CONFIG_HOME/zsh/scripts.sh"
 
 if [ $(command -v "fzf") ]; then
-    source /usr/share/fzf/completion.zsh
-    source /usr/share/fzf/key-bindings.zsh
+    # source /usr/share/fzf/completion.zsh
+    # source /usr/share/fzf/key-bindings.zsh
 fi
 
 
