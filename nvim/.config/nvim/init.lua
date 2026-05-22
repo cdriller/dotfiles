@@ -1,3 +1,11 @@
+vim.filetype.add({
+    extension = {
+        h = "c",
+        tex = "tex",
+        lds = "ld",
+    },
+})
+
 -- ###########
 -- # options #
 -- ###########
@@ -12,7 +20,7 @@ vim.wo.culopt = "both"
 
 -- Undo options
 vim.o.undofile = true
-vim.o.undodir = os.getenv("HOME") .. "/.config/nvim/undo"
+vim.o.undodir = os.getenv("XDG_STATE_HOME") .. "nvim/undo"
 vim.o.undolevels = 10000
 vim.o.undoreload = 10000
 
@@ -54,29 +62,16 @@ vim.opt.foldnestmax = 4
 vim.opt.foldcolumn = "1"
 vim.opt.foldtext = ""
 
--- ###########
--- # Globals #
--- ###########
+-- ##############
+-- # Leader Key #
+-- ##############
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
--- This is also a good place to setup other settings (vim.opt)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-
--- Disable space in normal mode (nnoremap <space> <nop>)
+-- Disable space and \ so they can be used as leader and localleader
 vim.keymap.set("n", "<space>", "<nop>", { noremap = true })
 vim.keymap.set("n", "\\", "<nop>", { noremap = true })
-
--- ###########
--- # Keymaps #
--- ###########
-vim.keymap.set("n", "]]", "]]zz", { silent = true, noremap = true })
-vim.keymap.set("n", "[[", "[[zz", { silent = true, noremap = true })
-vim.keymap.set("n", "[]", "[]zz", { silent = true, noremap = true })
-vim.keymap.set("n", "][", "][zz", { silent = true, noremap = true })
-vim.keymap.set("n", "[c", "[czz", { silent = true, noremap = true })
-vim.keymap.set("n", "]c", "]czz", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-]>", "<C-]>zz", { silent = true, noremap = true })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -112,15 +107,8 @@ require("lazy").setup({
     checker = { enabled = true },
 })
 
+require "lsp"
 
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('my.lsp', {}),
-    callback = function(_)
-        vim.keymap.set("n", "grc", vim.lsp.buf.declaration)
-        vim.keymap.set("n", "grd", vim.lsp.buf.definition)
-    end
-})
-
-vim.schedule(function()
-    require "keys".global()
+vim.schedule(function ()
+   require "keys".global()
 end)

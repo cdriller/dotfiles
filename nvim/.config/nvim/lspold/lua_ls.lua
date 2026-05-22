@@ -13,8 +13,9 @@ return {
         -- lua language server is super confused when editing lua files in the config
         -- and raises a lot of [duplicate-doc-field] warnings
         local runtime_files = vim.api.nvim_get_runtime_file("", true)
+        local config_path = vim.fn.stdpath("config")
         for k, v in ipairs(runtime_files) do
-            if v == "/home/my-login/.config/nvim/after" or v == "/home/my-login/.config/nvim" then
+            if v == config_path .. "/after" or v == config_path then
                 table.remove(runtime_files, k)
             end
         end
@@ -33,24 +34,9 @@ return {
                     "lua/?/init.lua",
                 },
             },
-            -- Make the server aware of Neovim runtime files
             workspace = {
                 checkThirdParty = false,
                 library = runtime_files,
-                -- library = {
-                --   vim.env.VIMRUNTIME,
-                --   -- Depending on the usage, you might want to add additional paths
-                --   -- here.
-                --   '${3rd}/luv/library'
-                --   -- '${3rd}/busted/library'
-                -- }
-                -- Or pull in all of 'runtimepath'.
-                -- NOTE: this is a lot slower and will cause issues when working on
-                -- your own configuration.
-                -- See https://github.com/neovim/nvim-lspconfig/issues/3189
-                -- library = {
-                --   vim.api.nvim_get_runtime_file('', true),
-                -- }
             },
         })
     end,
