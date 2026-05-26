@@ -6,6 +6,25 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function (args)
         require "keys".lsp_attach_evect(args)
         vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
+
+        if vim.lsp.inlay_hint then
+            vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+        end
+
+        local buf = args.buf
+        local map = function (mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, {
+                buffer = buf,
+                desc = desc,
+                silent = true,
+            })
+        end
+        -- map("n", "gd", vim.lsp.buf.definition, "LSP: go to definition")
+        -- map("n", "gD", vim.lsp.buf.declaration, "LSP: go to declaration")
+        -- map("n", "gr", vim.lsp.buf.references, "LSP: references")
+        -- map("n", "K", vim.lsp.buf.hover, "LSP: hover")
+        -- map("n", "<leader>rn", vim.lsp.buf.rename, "LSP: rename")
+        -- map("n", "<leader>ca", vim.lsp.buf.code_action, "LSP: code action")
     end,
 })
 
@@ -26,6 +45,8 @@ end
 
 
 load_lsps {
+    {name = "solidity_custom"},
+    {name = "vtsls"},
     {
         name = "clangd",
         config = {
@@ -47,6 +68,8 @@ load_lsps {
     },
     { name = "lua_ls",
         config = {
+  cmd = { 'lua-language-server' },
+  filetypes = { 'lua' },
             on_init = function (client)
                 if client.workspace_folders then
                     local path = client.workspace_folders[1].name
