@@ -10,5 +10,7 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 
 export EDITOR="nvim"
 export VISUAL="nvim"
+export PAGER="bat"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 export PATH="$CARGO_HOME/bin:$PATH"
