@@ -22,13 +22,20 @@
 	defaultBranch = main
 [core]
 	editor = nvim
+	pager = delta
 [advice]
 	forceDeleteBranch = false
 	detachedHead = false
 [fetch]
 	prune = true
 	verbose = true
-[diff]
-	tool = codium
-[difftool "codium"]
-	cmd = codium --diff $LOCAL $REMOTE
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    side-by-side = true
+
+[merge]
+    conflictStyle = zdiff3
