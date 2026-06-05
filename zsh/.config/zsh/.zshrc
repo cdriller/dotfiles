@@ -5,7 +5,7 @@ export HISTFILE="$XDG_STATE_HOME/zsh/.zhistory"
 export HISTSIZE=10000
 export SAVEHIST=10000
 
-source "$XDG_CONFIG_HOME/zsh/aliases"
+FPATH="$(brew --prefix)/share/zsh-completions:$FPATH"
 
 zmodload zsh/complist
 
@@ -39,8 +39,7 @@ source "$XDG_CONFIG_HOME/zsh/external/bd.zsh"
 source "$XDG_CONFIG_HOME/zsh/scripts.sh"
 
 if [ $(command -v "fzf") ]; then
-    # source /usr/share/fzf/completion.zsh
-    # source /usr/share/fzf/key-bindings.zsh
+	source <(fzf --zsh)
 fi
 
 
@@ -59,3 +58,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh --disable-up-arrow)"
