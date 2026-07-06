@@ -1,5 +1,22 @@
 local M = {}
 
+M.which_key = function()
+    require("which-key").add({ "<leader>t", group = "Toggle" })
+end
+
+M.harpoon = function()
+    local wk = require("which-key")
+    local harpoon = require("harpoon")
+
+    wk.add({
+        { "<C-e>",     function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon quick menu",  mode = "n" },
+        { "<C-h>",     function() harpoon:list():select(1) end,                     desc = "Harpoon file 1",      mode = "n" },
+        { "<C-j>",     function() harpoon:list():select(2) end,                     desc = "Harpoon file 2",      mode = "n" },
+        { "<C-k>",     function() harpoon:list():select(3) end,                     desc = "Harpoon file 3",      mode = "n" },
+        { "<C-l>",     function() harpoon:list():select(4) end,                     desc = "Harpoon file 4",      mode = "n" },
+        { "<leader>a", function() harpoon:list():add() end,                         desc = "Add file to Harpoon", mode = "n" },
+    })
+end
 
 M.gitsigns = function (bufnr)
     local gitsigns = require("gitsigns")
@@ -69,7 +86,7 @@ M.gitsigns = function (bufnr)
     map("n", "<leader>hq", gitsigns.setqflist)
 
     -- Toggles
-    map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
+    map("n", "<leader>tb", gitsigns.toggle_current_line_blame, {desc = "Line blame"})
     -- map("n", "<leader>tw", gitsigns.toggle_word_diff)
 
     -- Text object
