@@ -1,187 +1,170 @@
 {
     "profiles": [
-    {
-      "name": "Custom Layout",
-      "selected": true,
-      "virtual_hid_keyboard": {
-        "keyboard_type_v2": "ansi"
-      },
-      "complex_modifications": {
-        "rules": [
-
-          // ─────────────────────────────────────────────
-          // CAPS LOCK
-          // • Tap  → Escape
-          // • Hold → Left Ctrl
-          // ─────────────────────────────────────────────
-          {
-            "description": "Caps Lock: tap = Escape, hold = Left Ctrl",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "caps_lock",
-                  "modifiers": { "optional": ["any"] }
-                },
-                "to": [
-                  {
-                    "key_code": "left_control",
-                    "lazy": true
-                  }
-                ],
-                "to_if_alone": [
-                  { "key_code": "escape" }
-                ],
-                "parameters": {
-                  "basic.to_if_alone_timeout_milliseconds": 200,
-                  "basic.to_if_held_down_threshold_milliseconds": 200
-                }
-              }
-            ]
-          },
-
-          // ─────────────────────────────────────────────
-          // RETURN KEY
-          // • Standard Return, kein Remapping
-          // ─────────────────────────────────────────────
-
-          // ─────────────────────────────────────────────
-          // SEMICOLON
-          // • Tap  → ;
-          // • Hold → Hyper (Cmd+Ctrl+Option)
-          // ─────────────────────────────────────────────
-          {
-            "description": "Semicolon: tap = ;, hold = Hyper (Cmd+Ctrl+Option)",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "semicolon",
-                  "modifiers": { "optional": ["any"] }
-                },
-                "to": [
-                  {
-                    "key_code": "left_option",
-                    "modifiers": ["left_command", "left_control"],
-                    "lazy": true
-                  }
-                ],
-                "to_if_alone": [
-                  { "key_code": "semicolon" }
-                ],
-                "parameters": {
-                  "basic.to_if_alone_timeout_milliseconds": 200,
-                  "basic.to_if_held_down_threshold_milliseconds": 200
-                }
-              }
-            ]
-          },
-
-          // ─────────────────────────────────────────────
-          // MODIFIER REMAPPING
-          // • Left Option → Left Option (unchanged)
-          // • Left Cmd    → unchanged
-          // • Right Cmd   → Navigation Layer (variable nav_layer)
-          // ─────────────────────────────────────────────
-          {
-            "description": "Right Cmd: hold = Navigation Layer ON",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "right_command",
-                  "modifiers": { "optional": ["any"] }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "nav_layer",
-                      "value": 1
+        {
+            "complex_modifications": {
+                "rules": [
+                    {
+                        "description": "Caps Lock: tap = Escape, hold = Left Ctrl",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "caps_lock",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "parameters": {
+                                    "basic.to_if_alone_timeout_milliseconds": 200,
+                                    "basic.to_if_held_down_threshold_milliseconds": 200
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_control",
+                                        "lazy": true
+                                    }
+                                ],
+                                "to_if_alone": [{ "key_code": "escape" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Semicolon: tap = ;, hold = Hyper (Cmd+Ctrl+Option)",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "semicolon",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "parameters": {
+                                    "basic.to_if_alone_timeout_milliseconds": 200,
+                                    "basic.to_if_held_down_threshold_milliseconds": 200
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_option",
+                                        "lazy": true,
+                                        "modifiers": ["left_command", "left_control"]
+                                    }
+                                ],
+                                "to_if_alone": [{ "key_code": "semicolon" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Right Cmd: hold = Navigation Layer ON",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [
+                                    {
+                                        "set_variable": {
+                                            "name": "nav_layer",
+                                            "value": 1
+                                        }
+                                    }
+                                ],
+                                "to_after_key_up": [
+                                    {
+                                        "set_variable": {
+                                            "name": "nav_layer",
+                                            "value": 0
+                                        }
+                                    }
+                                ],
+                                "to_if_alone": [],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Nav: h → Left Arrow (modifiers passthrough)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "nav_layer",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "h",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [{ "key_code": "left_arrow" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Nav: j → Down Arrow (modifiers passthrough)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "nav_layer",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "j",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [{ "key_code": "down_arrow" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Nav: k → Up Arrow (modifiers passthrough)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "nav_layer",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "k",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [{ "key_code": "up_arrow" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Nav: l → Right Arrow (modifiers passthrough)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "nav_layer",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "l",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [{ "key_code": "right_arrow" }],
+                                "type": "basic"
+                            }
+                        ]
                     }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "nav_layer",
-                      "value": 0
-                    }
-                  }
-                ],
-                "to_if_alone": []
-              }
-            ]
-          },
-          // ─────────────────────────────────────────────────────────────
-          // NAVIGATION LAYER (Right Cmd held)
-          //
-          // Modifier werden via optional:any automatisch durchgereicht.
-          // Option+h/l → Option+←/→ (Wort springen) funktioniert damit
-          // automatisch, da left_option wieder echtes Option ist.
-          //
-          // h → ←   j → ↓   k → ↑   l → →
-          // ─────────────────────────────────────────────────────────────
-
-          // ── optional:any für alle hjkl ─────────────────────────────
-          {
-            "description": "Nav: h → Left Arrow (modifiers passthrough)",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": { "key_code": "h", "modifiers": { "optional": ["any"] } },
-                "to": [ { "key_code": "left_arrow" } ],
-                "conditions": [ { "type": "variable_if", "name": "nav_layer", "value": 1 } ]
-              }
-            ]
-          },
-          {
-            "description": "Nav: j → Down Arrow (modifiers passthrough)",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": { "key_code": "j", "modifiers": { "optional": ["any"] } },
-                "to": [ { "key_code": "down_arrow" } ],
-                "conditions": [ { "type": "variable_if", "name": "nav_layer", "value": 1 } ]
-              }
-            ]
-          },
-          {
-            "description": "Nav: k → Up Arrow (modifiers passthrough)",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": { "key_code": "k", "modifiers": { "optional": ["any"] } },
-                "to": [ { "key_code": "up_arrow" } ],
-                "conditions": [ { "type": "variable_if", "name": "nav_layer", "value": 1 } ]
-              }
-            ]
-          },
-          {
-            "description": "Nav: l → Right Arrow (modifiers passthrough)",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": { "key_code": "l", "modifiers": { "optional": ["any"] } },
-                "to": [ { "key_code": "right_arrow" } ],
-                "conditions": [ { "type": "variable_if", "name": "nav_layer", "value": 1 } ]
-              }
-            ]
-          }
-
-          // ─────────────────────────────────────────────
-          // ERWEITERUNGEN
-          // Weitere Nav-Layer Bindings hier einfügen, z.B.:
-          //
-          // { "description": "Nav Layer: i → Page Up", ... }
-          // { "description": "Nav Layer: d → Page Down", ... }
-          // ─────────────────────────────────────────────
-
-        ]
-      },
-      "simple_modifications": [],
-      "fn_function_keys": [],
-      "devices": []
-    },
+                ]
+            },
+            "name": "Custom Layout",
+            "selected": true,
+            "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
+        },
         {
             "complex_modifications": {
                 "parameters": { "basic.to_if_held_down_threshold_milliseconds": 100 },
