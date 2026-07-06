@@ -1,5 +1,3 @@
-# Hyper Key = Cmd+Ctrl+Option (; on hold via Karabiner)
-#
 # Dokumentation: https://nikitabobko.github.io/AeroSpace/guide
 
 config-version = 2
@@ -29,12 +27,12 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 # GAPS
 # ─────────────────────────────────────────────
 [gaps]
-inner.horizontal = 8
-inner.vertical   = 8
-outer.left       = 8
-outer.right      = 8
-outer.top        = 8
-outer.bottom     = 8
+inner.horizontal = 0
+inner.vertical   = 0
+outer.left       = 0
+outer.right      = 0
+outer.top        = 0
+outer.bottom     = 0
 
 # ─────────────────────────────────────────────
 # KEY MAPPING
@@ -43,64 +41,43 @@ outer.bottom     = 8
 preset = 'qwerty'
 
 # ─────────────────────────────────────────────
-# BINDINGS  (Hyper = cmd+ctrl+alt)
+# BINDINGS
 # ─────────────────────────────────────────────
 [mode.main.binding]
 
-# — Fokus (vim-style) —
-cmd-ctrl-alt-h = 'focus left'
-cmd-ctrl-alt-j = 'focus down'
-cmd-ctrl-alt-k = 'focus up'
-cmd-ctrl-alt-l = 'focus right'
+cmd-ctrl-h = 'focus left'
+cmd-ctrl-j = 'focus down'
+cmd-ctrl-k = 'focus up'
+cmd-ctrl-l = 'focus right'
 
-# — Fenster verschieben —
-cmd-ctrl-alt-shift-h = 'move left'
-cmd-ctrl-alt-shift-j = 'move down'
-cmd-ctrl-alt-shift-k = 'move up'
-cmd-ctrl-alt-shift-l = 'move right'
+cmd-ctrl-shift-h = 'move left'
+cmd-ctrl-shift-j = 'move down'
+cmd-ctrl-shift-k = 'move up'
+cmd-ctrl-shift-l = 'move right'
 
-# — Workspaces wechseln —
-cmd-ctrl-alt-1 = 'workspace 1'
-cmd-ctrl-alt-2 = 'workspace 2'
-cmd-ctrl-alt-3 = 'workspace 3'
-cmd-ctrl-alt-4 = 'workspace 4'
-cmd-ctrl-alt-5 = 'workspace 5'
-cmd-ctrl-alt-6 = 'workspace 6'
-cmd-ctrl-alt-7 = 'workspace 7'
-cmd-ctrl-alt-8 = 'workspace 8'
-cmd-ctrl-alt-9 = 'workspace 9'
 
-# — Fenster auf Workspace verschieben —
-cmd-ctrl-alt-shift-1 = 'move-node-to-workspace 1'
-cmd-ctrl-alt-shift-2 = 'move-node-to-workspace 2'
-cmd-ctrl-alt-shift-3 = 'move-node-to-workspace 3'
-cmd-ctrl-alt-shift-4 = 'move-node-to-workspace 4'
-cmd-ctrl-alt-shift-5 = 'move-node-to-workspace 5'
-cmd-ctrl-alt-shift-6 = 'move-node-to-workspace 6'
-cmd-ctrl-alt-shift-7 = 'move-node-to-workspace 7'
-cmd-ctrl-alt-shift-8 = 'move-node-to-workspace 8'
-cmd-ctrl-alt-shift-9 = 'move-node-to-workspace 9'
+cmd-ctrl-t = 'workspace term --auto-back-and-forth'
+cmd-ctrl-shift-t = 'move-node-to-workspace term'
+cmd-ctrl-b = 'workspace browser --auto-back-and-forth'
+cmd-ctrl-shift-b = 'move-node-to-workspace browser'
+cmd-ctrl-o = 'workspace org --auto-back-and-forth'
+cmd-ctrl-shift-o = 'move-node-to-workspace org'
+cmd-ctrl-m = 'workspace music --auto-back-and-forth'
+cmd-ctrl-shift-m = 'move-node-to-workspace music'
+cmd-ctrl-f = 'workspace home --auto-back-and-forth'
+cmd-ctrl-shift-f = 'move-node-to-workspace home'
 
-# — Layout —
-cmd-ctrl-alt-slash = 'layout tiles horizontal vertical'   # zwischen horizontal/vertikal wechseln
-cmd-ctrl-alt-comma = 'layout accordion horizontal vertical' # accordion mode
+cmd-ctrl-comma = 'layout tiles horizontal vertical'
+cmd-ctrl-period = 'layout accordion horizontal vertical'
 
-# — Vollbild (AeroSpace-style, kein macOS fullscreen) —
-cmd-ctrl-alt-f = 'fullscreen'
+cmd-ctrl-enter = 'fullscreen'
 
-# — Zurück zum letzten Workspace —
-cmd-ctrl-alt-tab = 'workspace-back-and-forth'
-
-# — Fenster zwischen Monitoren verschieben —
-cmd-ctrl-alt-shift-tab = 'move-node-to-monitor next'
-
-# — Resize Mode aktivieren —
-cmd-ctrl-alt-r = 'mode resize'
+cmd-ctrl-slash = 'move-workspace-to-monitor --wrap-around next'
 
 # ─────────────────────────────────────────────
 # RESIZE MODE
-# Mit Hyper+R aktivieren, mit Escape beenden
 # ─────────────────────────────────────────────
+cmd-ctrl-r = 'mode resize'
 [mode.resize.binding]
 h = 'resize width -50'
 l = 'resize width +50'
