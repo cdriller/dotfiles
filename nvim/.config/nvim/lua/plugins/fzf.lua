@@ -17,7 +17,7 @@ return {
     },
     opts = {
         winopts = {
-            fullscreen = true,
+            fullscreen = false,
         },
     },
 }

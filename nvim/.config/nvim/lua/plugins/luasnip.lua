@@ -10,6 +10,11 @@ return {
         local rep = extras.rep
         local fmt = require("luasnip.extras.fmt").fmt
 
+        -- <C-e> to cycle choice nodes (not handled by blink.cmp)
+        vim.keymap.set({ "i", "s" }, "<C-e>", function ()
+            if ls.choice_active() then ls.change_choice(1) end
+        end, { silent = true, desc = "Snippet cycle choice" })
+
         ls.add_snippets("all", {
             s("ternary", {
                 -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"

@@ -7,13 +7,12 @@ end
 M.harpoon = function()
     local wk = require("which-key")
     local harpoon = require("harpoon")
-
     wk.add({
         { "<C-e>",     function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon quick menu",  mode = "n" },
-        { "<C-h>",     function() harpoon:list():select(1) end,                     desc = "Harpoon file 1",      mode = "n" },
-        { "<C-j>",     function() harpoon:list():select(2) end,                     desc = "Harpoon file 2",      mode = "n" },
-        { "<C-k>",     function() harpoon:list():select(3) end,                     desc = "Harpoon file 3",      mode = "n" },
-        { "<C-l>",     function() harpoon:list():select(4) end,                     desc = "Harpoon file 4",      mode = "n" },
+        { "<leader>1",     function() harpoon:list():select(1) end,                     desc = "Harpoon file 1",      mode = "n" },
+        { "<leader>2",     function() harpoon:list():select(2) end,                     desc = "Harpoon file 2",      mode = "n" },
+        { "<leader>3",     function() harpoon:list():select(3) end,                     desc = "Harpoon file 3",      mode = "n" },
+        { "<leader>4",     function() harpoon:list():select(4) end,                     desc = "Harpoon file 4",      mode = "n" },
         { "<leader>a", function() harpoon:list():add() end,                         desc = "Add file to Harpoon", mode = "n" },
     })
 end
@@ -86,7 +85,7 @@ M.gitsigns = function (bufnr)
     map("n", "<leader>hq", gitsigns.setqflist)
 
     -- Toggles
-    map("n", "<leader>tb", gitsigns.toggle_current_line_blame, {desc = "Line blame"})
+    map("n", "<leader>tb", gitsigns.toggle_current_line_blame, { desc = "line blame" })
     -- map("n", "<leader>tw", gitsigns.toggle_word_diff)
 
     -- Text object
@@ -128,14 +127,6 @@ local function source_current_function()
     load(source, "test", "t", _G)()
 end
 
-M.lsp_attached = function (args)
-    vim.keymap.set("n", "grc", vim.lsp.buf.declaration)
-    vim.keymap.set("n", "grd", vim.lsp.buf.definition)
-
-    local wk = require("which-key")
-    wk.add { { "gQ", function () vim.lsp.buf.format() end, desc = "Format with lsp", buffer = args.buf } }
-end
-
 M.global = function ()
     vim.keymap.set("n", "]]", "]]zz", { silent = true, noremap = true })
     vim.keymap.set("n", "[[", "[[zz", { silent = true, noremap = true })
@@ -152,9 +143,10 @@ M.global = function ()
 
         -- nvim
         { "<leader>n",        group = "nvim" },
-        { "<leader>ni",       ":e ~/.config/nvim/init.lua<cr>",                                       desc = "Open nvim init.lua" },
-        { "<leader>np",       function () fzf.files({ cwd = "$HOME/.config/nvim/lua/plugins/" }) end, desc = "Search for nvim plugin config" },
-        { "<leader>nk",       ":e ~/.config/nvim/lua/keys.lua<cr>",                                   desc = "Open nvim keys config" },
+        { "<leader>ni",       ":e ~/dotfiles/nvim/.config/nvim/init.lua<cr>",                                       desc = "Open init.lua" },
+        { "<leader>np",       function () fzf.files({ cwd = "$HOME/dotfiles/nvim/.config/nvim/lua/plugins/" }) end, desc = "Search plugin config" },
+        { "<leader>nk",       ":e ~/dotfiles/nvim/.config/nvim/lua/keys.lua<cr>",                                   desc = "Open keys config" },
+        { "<leader>nl",       ":e ~/dotfiles/nvim/.config/nvim/lua/lsp.lua<cr>",                                   desc = "Open lsp config" },
 
         -- other configs
         { "<leader>,",        group = "config" },
@@ -165,10 +157,23 @@ M.global = function ()
         { "<leader><CR><CR>", ":source %<CR>",                                                        desc = "Nvim source file" },
         { "<leader><CR>if",   source_current_function,                                                desc = "Nvim source inner function" },
         { "<leader><CR><CR>", ":'<,'>source<CR>",                                                     mode = "v",                            desc = "Nvim source selection" },
-        { "<leader><leader>", ":w<CR>",                                                               mode = "n",                            noremap = true,                silent = true },
+        { "<leader><leader>", ":make<CR>",                                                               mode = "n",                            noremap = true,                silent = true },
         { "<leader>b",        fzf.buffers,                                                            mode = "n",                            noremap = true,                silent = true },
         { "<leader>f",        fzf.files,                                                              mode = "n",                            noremap = true,                silent = true, desc = "Find files in this directory" },
+
+        { "<leader>cd",        ":cd %:h<CR>",                                                              mode = "n",                            noremap = true,                silent = true, desc = "cd to dir of %" },
     }
 end
 
+M.neogen = function (_)
+    local neogen = require("neogen")
+    local wk = require("which-key")
+    wk.add({
+      {
+        "<leader>d",
+        neogen.generate,
+        desc = "Generate docstring",
+      }
+    })
+end
 return M

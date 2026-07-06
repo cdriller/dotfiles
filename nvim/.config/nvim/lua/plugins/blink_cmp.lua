@@ -44,27 +44,28 @@ return {
         },
         snippets = { preset = "luasnip" },
         keymap = {
-            preset = "enter",
-            ['<Down>'] = {'show_and_insert', 'select_next', 'fallback' },
+            preset = "none",
+            ['<C-n>'] = {'select_next', 'fallback' },
+            ['<C-p>'] = {'select_prev', 'fallback' },
+            ['<C-y>'] = {'accept', 'fallback' },
+            -- Disable Tab for snippet jumping (keep literal Tab)
+            -- Snippet keybindings via LuaSnip
+            ['<C-k>'] = { 'snippet_forward', 'fallback' },
+            ['<C-l>'] = { 'snippet_forward', 'fallback' },
+            ['<C-h>'] = { 'snippet_backward', 'fallback' },
         },
         fuzzy = {
             implementation = "prefer_rust_with_warning",
         },
         completion = {
+            list = {
+                selection = {
+                    preselect = true,
+                    auto_insert = false,
+                },
+            },
             menu = {
-                auto_show = function()
-                    local filetypes = {
-                        tex = true,
-                        plaintex = true,
-                        codecompanion = true,
-                        gitcommit = true,
-                        org = true
-                    }
-                    if filetypes[vim.bo.filetype] then
-                        return false
-                    end
-                    return true
-                end,
+                auto_show = false,
             },
             documentation = { auto_show = true, auto_show_delay_ms = 500 },
         },
@@ -72,4 +73,50 @@ return {
             default = { "lsp", "path", "snippets", "buffer" },
         },
     },
+    config = function(_, opts)
+        require('blink.cmp').setup(opts)
+
+        local timer = assert(vim.uv.new_timer())
+        local DELAY_MS = 750
+
+        local function start_timer()
+            timer:stop()
+            timer:start(DELAY_MS, 0, vim.schedule_wrap(function()
+                if vim.api.nvim_get_mode().mode == 'i' then
+                    require('blink.cmp').show()
+                end
+            end))
+        end
+
+        vim.api.nvim_create_autocmd('TextChangedI', {
+            callback = function()
+                start_timer()
+            end,
+        })
+
+
+        vim.api.nvim_create_autocmd('InsertEnter', {
+            callback = function()
+                start_timer()
+            end,
+        })
+
+        vim.api.nvim_create_autocmd('CursorMovedI', {
+            callback = function()
+                start_timer()
+            end,
+        })
+
+        vim.api.nvim_create_autocmd('InsertLeave', {
+            callback = function()
+                timer:stop()
+            end,
+        })
+
+        vim.api.nvim_create_autocmd('VimLeavePre', {
+            callback = function()
+                if not timer:is_closing() then timer:close() end
+            end,
+        })
+    end,
 }

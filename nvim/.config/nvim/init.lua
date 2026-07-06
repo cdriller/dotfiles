@@ -56,11 +56,14 @@ vim.o.signcolumn = "yes:2"
 vim.o.completeopt = "popup,menuone,noinsert"
 
 -- Folding
-vim.opt.foldlevel = 99
-vim.opt.foldlevelstart = 99
-vim.opt.foldnestmax = 4
-vim.opt.foldcolumn = "1"
-vim.opt.foldtext = ""
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldenable = false
+-- vim.opt.foldlevel = 99
+-- vim.opt.foldlevelstart = 99
+-- vim.opt.foldnestmax = 4
+-- vim.opt.foldcolumn = "1"
+-- vim.opt.foldtext = ""
 
 -- ##############
 -- # Leader Key #
@@ -103,8 +106,7 @@ require("lazy").setup({
         missing = true,
         colorscheme = { "gruvbox" },
     },
-    -- automatically check for plugin updates
-    checker = { enabled = true },
+    checker = { enabled = false },
 })
 
 require "lsp"
