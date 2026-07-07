@@ -66,6 +66,8 @@ cmd-ctrl-m = 'workspace music --auto-back-and-forth'
 cmd-ctrl-shift-m = 'move-node-to-workspace music'
 cmd-ctrl-f = 'workspace home --auto-back-and-forth'
 cmd-ctrl-shift-f = 'move-node-to-workspace home'
+cmd-ctrl-a = 'workspace ai --auto-back-and-forth'
+cmd-ctrl-shift-a = 'move-node-to-workspace ai'
 
 cmd-ctrl-comma = 'layout tiles horizontal vertical'
 cmd-ctrl-period = 'layout accordion horizontal vertical'
