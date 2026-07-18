@@ -62,12 +62,16 @@ cmd-ctrl-b = 'workspace browser --auto-back-and-forth'
 cmd-ctrl-shift-b = 'move-node-to-workspace browser'
 cmd-ctrl-o = 'workspace org --auto-back-and-forth'
 cmd-ctrl-shift-o = 'move-node-to-workspace org'
-cmd-ctrl-m = 'workspace music --auto-back-and-forth'
-cmd-ctrl-shift-m = 'move-node-to-workspace music'
-cmd-ctrl-f = 'workspace home --auto-back-and-forth'
-cmd-ctrl-shift-f = 'move-node-to-workspace home'
+cmd-ctrl-m = 'workspace media --auto-back-and-forth'
+cmd-ctrl-shift-m = 'move-node-to-workspace media'
+cmd-ctrl-f = 'workspace finder --auto-back-and-forth'
+cmd-ctrl-shift-f = 'move-node-to-workspace finder'
 cmd-ctrl-a = 'workspace ai --auto-back-and-forth'
 cmd-ctrl-shift-a = 'move-node-to-workspace ai'
+cmd-ctrl-i = 'workspace inbox --auto-back-and-forth'
+cmd-ctrl-shift-i = 'move-node-to-workspace inbox'
+cmd-ctrl-p = 'workspace paper --auto-back-and-forth'
+cmd-ctrl-shift-p = 'move-node-to-workspace paper'
 
 cmd-ctrl-comma = 'layout tiles horizontal vertical'
 cmd-ctrl-period = 'layout accordion horizontal vertical'
@@ -75,6 +79,16 @@ cmd-ctrl-period = 'layout accordion horizontal vertical'
 cmd-ctrl-enter = 'fullscreen'
 
 cmd-ctrl-slash = 'move-workspace-to-monitor --wrap-around next'
+
+# ─────────────────────────────────────────────
+# App specific config
+# ─────────────────────────────────────────────
+on-window-detected = [
+  {
+      if = 'test %{app-bundle-id} = com.1password.1password',
+      run = 'layout floating',
+  },
+]
 
 # ─────────────────────────────────────────────
 # RESIZE MODE
