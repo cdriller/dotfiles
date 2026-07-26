@@ -217,3 +217,60 @@
   :ensure nil
   :config
   (which-key-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Project directory jumping
+
+(defvar prilepp/proj-directory "~/proj/"
+  "Root directory containing project folders.")
+
+(defvar prilepp/proj-action-alist
+  '((?i . prilepp/proj-open-index)
+    (?d . prilepp/proj-open-dired))
+  "Alist mapping action key chars to functions.
+Each function receives the absolute path to the selected project directory.
+Extend this list to add new `enter+KEY' actions.")
+
+(defun prilepp/proj--list-projects ()
+  "Return list of project directory names under `prilepp/proj-directory'."
+  (let ((root (expand-file-name prilepp/proj-directory)))
+    (seq-filter
+     (lambda (f) (file-directory-p (expand-file-name f root)))
+     (directory-files root nil "^[^.]"))))
+
+(defun prilepp/proj-open-index (dir)
+  "Open index.org in DIR, creating it if it doesn't exist yet."
+  (let ((index (expand-file-name "index.org" dir)))
+    (unless (file-exists-p index)
+      (make-directory dir t)
+      (with-temp-buffer (write-file index)))
+    (find-file index)))
+
+(defun prilepp/proj-open-dired (dir)
+  "Open DIR in dired."
+  (dired dir))
+
+(defun prilepp/proj-find ()
+  "Select a project under `prilepp/proj-directory', then act on it.
+After RET, wait for a second key press to decide the action;
+see `prilepp/proj-action-alist'. Pressing RET again or C-g aborts
+without doing anything."
+  (interactive)
+  (let* ((projects (prilepp/proj--list-projects))
+         (choice (completing-read "Project: " projects nil t))
+         (dir (expand-file-name choice prilepp/proj-directory))
+         (hint (mapconcat (lambda (c) (key-description (vector (car c))))
+                           prilepp/proj-action-alist ", "))
+         (key (read-key (format "Action for \"%s\" [%s]: " choice hint)))
+         (action (alist-get key prilepp/proj-action-alist)))
+    (cond
+     ((memq key '(?\r ?\C-g))
+      (message "Abgebrochen"))
+     (action
+      (funcall action dir))
+     (t
+      (message "No action bound to %s" (key-description (vector key)))))))
+
+(global-set-key (kbd "C-c p f") #'prilepp/proj-find)
+(which-key-add-key-based-replacements
+  "C-c p f" "find project")
