@@ -72,6 +72,8 @@ cmd-ctrl-i = 'workspace inbox --auto-back-and-forth'
 cmd-ctrl-shift-i = 'move-node-to-workspace inbox'
 cmd-ctrl-p = 'workspace paper --auto-back-and-forth'
 cmd-ctrl-shift-p = 'move-node-to-workspace paper'
+cmd-ctrl-e = 'workspace emacs --auto-back-and-forth'
+cmd-ctrl-shift-e = 'move-node-to-workspace emacs'
 
 cmd-ctrl-comma = 'layout tiles horizontal vertical'
 cmd-ctrl-period = 'layout accordion horizontal vertical'
@@ -83,12 +85,10 @@ cmd-ctrl-slash = 'move-workspace-to-monitor --wrap-around next'
 # ─────────────────────────────────────────────
 # App specific config
 # ─────────────────────────────────────────────
-on-window-detected = [
-  {
-      if = 'test %{app-bundle-id} = com.1password.1password',
-      run = 'layout floating',
-  },
-]
+# on-window-detected = {
+#       if = 'test %{app-bundle-id} = com.1password.1password',
+#       run = 'layout floating',
+#   }
 
 # ─────────────────────────────────────────────
 # RESIZE MODE

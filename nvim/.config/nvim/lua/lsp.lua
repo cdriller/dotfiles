@@ -18,8 +18,16 @@ end
 
 
 load_lsps {
-    {name = "solidity_custom"},
-    {name = "vtsls"},
+    {
+        name = "pyright",
+        config = {
+            cmd = { 'pyright-langserver', '--stdio' },
+            filetypes = { 'python' },
+            root_markers = { 'pyproject.toml', 'setup.py', '.git' },
+        }
+    },
+    { name = "solidity_custom" },
+    { name = "vtsls" },
     {
         name = "clangd",
         config = {
@@ -41,9 +49,9 @@ load_lsps {
     },
     { name = "lua_ls",
         config = {
-  cmd = { 'lua-language-server' },
-  filetypes = { 'lua' },
-            on_init = function (client)
+            cmd = { 'lua-language-server' },
+            filetypes = { 'lua' },
+            on_init = function(client)
                 if client.workspace_folders then
                     local path = client.workspace_folders[1].name
                     if
@@ -90,12 +98,11 @@ load_lsps {
     },
     { name = "rust_analyzer" },
     { name = "jdtls" },
-    { name = "pyright" },
     { name = "tinymist",
-      config = {
-        cmd = { "tinymist" },
-        filetypes = { "typst" },
-        single_file_support = true,
-      }
+        config = {
+            cmd = { "tinymist" },
+            filetypes = { "typst" },
+            single_file_support = true,
+        }
     },
 }

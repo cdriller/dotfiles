@@ -1,5 +1,9 @@
 (load-theme 'modus-vivendi t)
 (tool-bar-mode -1)
+(setq create-lockfiles nil)
+
+(setq org-id-locations-file (expand-file-name "org-id-locations" "~/.cache/emacs/"))
+(setq org-roam-db-location (expand-file-name "org-roam.db" "~/.cache/emacs/"))
 
 (setq mac-option-modifier 'meta
       mac-right-option-modifier 'none)
@@ -9,33 +13,54 @@
 ; do not truncate lines
 (global-visual-line-mode 1)
 
+(use-package emacs
+  :ensure nil
+  :bind (("M-h" . windmove-left)
+         ("M-j" . windmove-down)
+         ("M-k" . windmove-up)
+         ("M-l" . windmove-right)))
+
 (defun my/edit-init-file ()
   "Open the Emacs init file."
   (interactive)
   (find-file user-init-file))
 
-(global-set-key (kbd "C-c f e") #'my/edit-init-file)
+(global-set-key (kbd "C-c e") #'my/edit-init-file)
 
 (defun my/edit-project-file ()
   "Open project file."
   (interactive)
   (find-file "~/plan/projects.org"))
 
-(global-set-key (kbd "C-c f p") #'my/edit-project-file)
+(global-set-key (kbd "C-c p p") #'my/edit-project-file)
 
 (defun my/edit-someday-file ()
   "Open someday file."
   (interactive)
   (find-file "~/plan/someday.org"))
 
-(global-set-key (kbd "C-c f s") #'my/edit-someday-file)
+(global-set-key (kbd "C-c p s") #'my/edit-someday-file)
 
 (defun my/edit-areas-file ()
   "Open areas file."
   (interactive)
   (find-file "~/plan/areas.org"))
 
-(global-set-key (kbd "C-c f a") #'my/edit-areas-file)
+(global-set-key (kbd "C-c p a") #'my/edit-areas-file)
+
+(defun my/edit-goals-file ()
+  "Open areas file."
+  (interactive)
+  (find-file "~/plan/goals.org"))
+
+(global-set-key (kbd "C-c p g") #'my/edit-goals-file)
+
+(defun my/edit-life-file ()
+  "Open life file."
+  (interactive)
+  (find-file "~/plan/life.org"))
+
+(global-set-key (kbd "C-c p l") #'my/edit-life-file)
 
 (defun my/insert-link-to-org-heading ()
   "Search headings across `org-refile-targets` and insert a link to the selected one."
@@ -122,10 +147,14 @@
   :custom
   (org-roam-directory (expand-file-name "notes" (getenv "HOME")))
   :bind
-  (("C-c n f" . org-roam-node-find)
-   ("C-c l n" . org-roam-node-insert)
-   ("C-c n p" . org-roam-capture)
+  (("C-c n p" . org-roam-node-find)
+   ("C-c l p" . org-roam-node-insert)
    ("C-c n b" . org-roam-buffer-toggle))
+  :init
+  (which-key-add-key-based-replacements
+    "C-c n p" "find or create permanent node"
+    "C-c l p" "insert link to permanent node "
+    "C-c n b" "show backlinks")
   :config
   (org-roam-db-autosync-mode))
 
@@ -160,9 +189,12 @@
   ;; Notizen liegen im org-roam-Verzeichnis:
   (citar-notes-paths (list (expand-file-name "notes" (getenv "HOME"))))
   :bind
-  (("C-c b o" . citar-open)        ; Quelle öffnen (PDF/Note/Link)
-   ("C-c n l" . citar-open-notes)
-   ("C-c b i" . citar-insert-citation)))
+  (("C-c n l" . citar-open-notes)
+   ("C-c l l" . citar-insert-citation))
+   :init
+   (which-key-add-key-based-replacements
+     "C-c n l" "find or create literature node"
+     "C-c l l" "insert link to literature node"))
 
 (use-package citar-org-roam
   :after (citar org-roam)
