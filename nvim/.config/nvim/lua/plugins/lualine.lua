@@ -3,6 +3,8 @@ return {
     event = "VeryLazy",
     opts = function ()
         local lualine_theme = require("lualine.themes.gruvbox")
+        local tabs_inactive_color = vim.deepcopy(lualine_theme.inactive.a)
+        local winbar_color = { fg = "#928374", bg = "NONE", gui = "italic" }
         lualine_theme.insert = lualine_theme.normal
         lualine_theme.visual = lualine_theme.normal
         lualine_theme.replace = lualine_theme.normal
@@ -11,6 +13,26 @@ return {
 
         local function is_diff_mode()
             return vim.wo.diff and "DIFF" or ""
+        end
+
+        local function window_cwd()
+            return vim.fn.getcwd(0)
+        end
+
+        local function session_cwd()
+            return vim.fn.getcwd(-1, -1)
+        end
+
+        local function has_local_cwd()
+            return window_cwd() ~= session_cwd()
+        end
+
+        local function cwd_component()
+            return " " .. vim.fn.fnamemodify(window_cwd(), ":~")
+        end
+
+        local function tab_cwd_label(_, tab)
+            return string.format("%d: %s", tab.tabnr, vim.fn.fnamemodify(vim.fn.getcwd(-1, tab.tabnr), ":~"))
         end
 
         return {
@@ -62,9 +84,29 @@ return {
                 lualine_y = {},
                 lualine_z = {},
             },
-            tabline = {},
-            winbar = {},
-            inactive_winbar = {},
+            tabline = {
+                lualine_a = {
+                    {
+                        "tabs",
+                        mode = 1,
+                        max_length = function() return vim.o.columns end,
+                        fmt = tab_cwd_label,
+                        tabs_color = { inactive = tabs_inactive_color },
+                    },
+                },
+            },
+            winbar = {
+                lualine_c = {
+                    { cwd_component, cond = has_local_cwd, color = winbar_color },
+                    { "filename", color = winbar_color },
+                },
+            },
+            inactive_winbar = {
+                lualine_c = {
+                    { cwd_component, cond = has_local_cwd, color = winbar_color },
+                    { "filename", color = winbar_color },
+                },
+            },
             extensions = { "fzf", "mundo", "mason", "fugitive", "man" },
         }
     end,

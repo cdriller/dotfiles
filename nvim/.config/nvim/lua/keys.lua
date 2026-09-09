@@ -161,7 +161,7 @@ M.global = function ()
         { "<leader>b",        fzf.buffers,                                                            mode = "n",                            noremap = true,                silent = true },
         { "<leader>f",        fzf.files,                                                              mode = "n",                            noremap = true,                silent = true, desc = "Find files in this directory" },
 
-        { "<leader>cd",        ":cd %:h<CR>",                                                              mode = "n",                            noremap = true,                silent = true, desc = "cd to dir of %" },
+        { "<leader>cd",        ":lcd %:h<CR>",                                                              mode = "n",                            noremap = true,                silent = true, desc = "lcd to dir of current file" },
     }
 end
 
