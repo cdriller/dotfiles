@@ -7,6 +7,10 @@ export HISTFILE="$XDG_STATE_HOME/zsh/.zhistory"
 export HISTSIZE=10000
 export SAVEHIST=10000
 
+export GPG_TTY=$(tty)
+zle -N precmd update_gpg_tty
+update_gpg_tty() { export GPG_TTY=$(tty) }
+
 # Completions
 [[ -d /opt/homebrew/share/zsh-completions ]] && \
   fpath=(/opt/homebrew/share/zsh-completions $fpath)
@@ -30,6 +34,7 @@ bindkey '^X^E' edit-command-line
 # Plugins
 source "$XDG_CONFIG_HOME/zsh/external/bd.zsh"
 source "$XDG_CONFIG_HOME/zsh/scripts.sh"
+[[ -f "$ZDOTDIR/aliases" ]] && source "$ZDOTDIR/aliases"
 
 # FZF
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git'"
