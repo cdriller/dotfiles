@@ -61,10 +61,6 @@ creating the project if it doesn't exist yet."
     (prilepp/proj-ensure-file name)
     (insert (format "[[project:%s][%s]]" name name))))
 
-(global-set-key (kbd "C-c i j") #'prilepp/org-insert-project-link)
-(which-key-add-key-based-replacements
-  "C-c i j" "project")
-
 (defvar prilepp/aor-directory "~/notes/horizons/aor/"
   "Directory containing one org file per area of responsibility.")
 
@@ -110,10 +106,6 @@ creating the area if it doesn't exist yet."
   (let ((name (completing-read "Area: " (prilepp/aor--list-aors))))
     (prilepp/aor-ensure-file name)
     (insert (format "[[area:%s][%s]]" name name))))
-
-(global-set-key (kbd "C-c i a") #'prilepp/org-insert-area-link)
-(which-key-add-key-based-replacements
-  "C-c i a" "area")
 
 (defun prilepp/routine--candidates ()
   "Return an alist of (HEADING-TITLE . MARKER) for every routine
@@ -202,10 +194,6 @@ creating the entry if it doesn't exist yet."
     (prilepp/life-ensure-file name)
     (insert (format "[[life:%s][%s]]" name name))))
 
-(global-set-key (kbd "C-c i i") #'prilepp/org-insert-life-link)
-(which-key-add-key-based-replacements
-  "C-c i i" "life")
-
 (defvar prilepp/goals-directory "~/notes/horizons/goals/"
   "Directory containing one org file per goal.")
 
@@ -252,10 +240,6 @@ creating the goal if it doesn't exist yet."
     (prilepp/goals-ensure-file name)
     (insert (format "[[goal:%s][%s]]" name name))))
 
-(global-set-key (kbd "C-c i g") #'prilepp/org-insert-goal-link)
-(which-key-add-key-based-replacements
-  "C-c i g" "goal")
-
 (defvar prilepp/vision-directory "~/notes/horizons/vision/"
   "Directory containing one org file per vision item.")
 
@@ -301,10 +285,6 @@ creating the vision item if it doesn't exist yet."
   (let ((name (completing-read "Vision: " (prilepp/vision--list-entries))))
     (prilepp/vision-ensure-file name)
     (insert (format "[[vision:%s][%s]]" name name))))
-
-(global-set-key (kbd "C-c i v") #'prilepp/org-insert-vision-link)
-(which-key-add-key-based-replacements
-  "C-c i v" "vision")
 
 (provide 'init-projects)
 ;;; init-projects.el ends here

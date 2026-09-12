@@ -115,9 +115,5 @@ discovered vdirsyncer calendar folders."
          (file (cdr (assoc choice candidates))))
     (insert (format "[[file:%s][%s]]" file choice))))
 
-(global-set-key (kbd "C-c i e") #'prilepp/org-insert-event-link)
-(which-key-add-key-based-replacements
-  "C-c i e" "event")
-
 (provide 'init-calendar)
 ;;; init-calendar.el ends here

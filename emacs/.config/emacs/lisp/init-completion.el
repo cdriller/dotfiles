@@ -35,7 +35,6 @@
   :config
   (which-key-mode)
   (which-key-add-key-based-replacements
-    "C-c i" "insert"
     "C-c v" "view"))
 
 (provide 'init-completion)

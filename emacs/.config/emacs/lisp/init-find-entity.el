@@ -1,9 +1,9 @@
 ;;; init-find-entity.el --- unified search/create across all entities -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; `prilepp/find-entity' (C-c o) replaces the old collection of per-entity
+;; `prilepp/find-entity' (C-c n) replaces the old collection of per-entity
 ;; top-level shortcuts (actions/projects/areas/goals/vision/life/zettel/
-;; literature/person/agenda/routine) with one `consult--multi'
+;; literature/person/agenda/routine/someday/heading) with one `consult--multi'
 ;; prompt: each entity type is its own source with a group heading (shown
 ;; in the completion list) and a narrow key. Selecting an existing name
 ;; opens/jumps to it; typing a name that doesn't exist yet creates it —
@@ -11,12 +11,12 @@
 ;; a brand-new name becomes, exactly like `consult-buffer' (`b SPC name').
 ;; Without narrowing, a new name defaults to a Zettel in the slipbox
 ;; (Zettel is the `:default' source).
-;; Journal (`C-c j') and someday (`C-c s') stay separate: neither is a
-;; named collection, so they don't fit this find-or-create-by-name model.
+;; Journal (`C-c j') stays separate: it isn't a named collection, so it
+;; doesn't fit this find-or-create-by-name model.
 ;;
-;; While in the C-c o minibuffer, RET runs the source's normal :action.
+;; While in the C-c n minibuffer, RET runs the source's normal :action.
 ;; Alternatively: `C-i' inserts an org link to the highlighted candidate at
-;; point (wherever C-c o was invoked from) instead of opening it; `C-c'
+;; point (wherever C-c n was invoked from) instead of opening it; `C-c'
 ;; copies that same link to the kill ring. Both read the candidate via
 ;; `vertico--candidate' and decode which source it belongs to via
 ;; Consult's own `consult--multi-source'/`consult--tofu-strip' (the same
@@ -31,6 +31,29 @@
   (seq-find (lambda (nd) (equal (org-roam-node-title nd) title))
             (org-roam-node-list)))
 
+(defun prilepp/heading--candidates ()
+  "Return an alist of (TARGET-NAME . (FILE . POS)) for every heading across
+`org-refile-targets' (the same target set `org-refile-get-location' searches)."
+  (mapcar (lambda (tgt) (cons (nth 0 tgt) (cons (nth 1 tgt) (nth 3 tgt))))
+          (org-refile-get-targets)))
+
+(defun prilepp/heading--jump (loc)
+  "Jump to the heading at LOC (a (FILE . POS) cons), widening and showing the entry."
+  (find-file (car loc))
+  (widen)
+  (goto-char (cdr loc))
+  (org-back-to-heading t)
+  (org-show-entry))
+
+(defun prilepp/heading--link (loc)
+  "Return an `id:' link to the heading at LOC (a (FILE . POS) cons)."
+  (with-current-buffer (find-file-noselect (car loc))
+    (save-excursion
+      (goto-char (cdr loc))
+      (let ((id (org-id-get-create))
+            (desc (org-get-heading t t t t)))
+        (format "[[id:%s][%s]]" id desc)))))
+
 (defvar prilepp/find-entity--sources nil
   "Vector of the sources used by the in-progress `prilepp/find-entity' call.")
 
@@ -43,7 +66,7 @@ the enclosing `prilepp/find-entity' call."
         (throw 'prilepp-find-entity
                (list kind (consult--tofu-strip cand)
                      (consult--multi-source prilepp/find-entity--sources cand)))
-      (user-error "Erst mit RET anlegen, dann C-c o erneut für den Link"))))
+      (user-error "Erst mit RET anlegen, dann C-c n erneut für den Link"))))
 
 (defun prilepp/find-entity-insert ()
   "Insert a link to the highlighted `prilepp/find-entity' candidate at point."
@@ -122,7 +145,16 @@ and `prilepp/read-entity-link'."
                       (let* ((marker (cdr (assoc n (prilepp/routine--candidates))))
                              (id (with-current-buffer (marker-buffer marker)
                                    (save-excursion (goto-char marker) (org-id-get-create)))))
-                        (format "[[id:%s][%s]]" id n))))))
+                        (format "[[id:%s][%s]]" id n))))
+           `(:name "Someday" :narrow ?s
+             :items ,(lambda () '("Someday"))
+             :action ,(lambda (_n) (my/edit-someday-file))
+             :new ,(lambda (_n) (my/edit-someday-file))
+             :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "~/notes/someday.org") "Someday")))
+           `(:name "Heading" :narrow ?h
+             :items ,(lambda () (mapcar #'car (prilepp/heading--candidates)))
+             :action ,(lambda (n) (prilepp/heading--jump (cdr (assoc n (prilepp/heading--candidates)))))
+             :link ,(lambda (n) (prilepp/heading--link (cdr (assoc n (prilepp/heading--candidates))))))))
 
 (defun prilepp/find-entity ()
   "Search or create across all named entities.
@@ -144,9 +176,9 @@ instead; `C-c' copies that link. See the Commentary above for details."
          (kill-new link)
          (message "Kopiert: %s" link))))))
 
-(global-set-key (kbd "C-c o") #'prilepp/find-entity)
+(global-set-key (kbd "C-c n") #'prilepp/find-entity)
 (which-key-add-key-based-replacements
-  "C-c o" "find entity")
+  "C-c n" "nodes")
 
 (defun prilepp/read-entity-link (prompt)
   "Prompt across all entities (like `prilepp/find-entity') and return an

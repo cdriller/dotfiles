@@ -80,10 +80,6 @@
       (user-error "Kontakt %s hat kein UID-Feld" choice))
     (org-set-property "CONTACT_UID" uid)))
 
-(global-set-key (kbd "C-c i p") #'prilepp/org-insert-contact-link)
-(which-key-add-key-based-replacements
-  "C-c i p" "contact")
-
 (defun prilepp/contact-uid-has-note (uid)
   "Return the file(s) containing CONTACT_UID: UID as a Person-Note, or nil."
   (let ((dir (expand-file-name prilepp/persons-directory)))

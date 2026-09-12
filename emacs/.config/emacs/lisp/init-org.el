@@ -7,7 +7,7 @@
 
 (defun my/org-horizon-files ()
   "Return all .org files in the horizons directory."
-  (directory-files "~/notes/horizons/" t "\\.org\\'"))
+  (directory-files-recursively "~/notes/horizons/" "\\.org\\'"))
 
 (use-package org
   :ensure nil
@@ -22,11 +22,9 @@
   :custom
   (org-roam-directory (expand-file-name "notes/slipbox" (getenv "HOME")))
   :bind
-  (("C-c i z" . org-roam-node-insert)
-   ("C-c v b" . org-roam-buffer-toggle))
+  (("C-c v b" . org-roam-buffer-toggle))
   :init
   (which-key-add-key-based-replacements
-    "C-c i z" "zettel"
     "C-c v b" "backlinks")
   :config
   (org-roam-db-autosync-mode))
@@ -56,12 +54,7 @@
   ;; Ordner, in dem du deine annotierten PDFs ablegst:
   (citar-library-paths '("~/media/books/"))
   ;; Notizen liegen im org-roam-Verzeichnis:
-  (citar-notes-paths (list (expand-file-name "notes/slipbox" (getenv "HOME"))))
-  :bind
-  (("C-c i l" . citar-insert-citation))
-   :init
-   (which-key-add-key-based-replacements
-     "C-c i l" "literature"))
+  (citar-notes-paths (list (expand-file-name "notes/slipbox" (getenv "HOME")))))
 
 (use-package citar-org-roam
   :after (citar org-roam)

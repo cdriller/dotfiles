@@ -18,10 +18,6 @@
   (interactive)
   (find-file "~/notes/someday.org"))
 
-(global-set-key (kbd "C-c s") #'my/edit-someday-file)
-(which-key-add-key-based-replacements
-  "C-c s" "someday")
-
 (defvar prilepp/journal-directory "~/notes/journal/"
   "Directory containing one org file per day.")
 
@@ -132,24 +128,6 @@ creating a new agenda file if it doesn't exist yet."
   (interactive)
   (let ((name (completing-read "Agenda: " (prilepp/agendas--list-entries))))
     (find-file (prilepp/agendas-ensure-file name))))
-
-(defun my/insert-link-to-org-heading ()
-  "Search headings across `org-refile-targets` and insert a link to the selected one."
-  (interactive)
-  (let* ((target (org-refile-get-location "Link zu Überschrift: "))
-         (file (nth 1 target))
-         (pos (nth 3 target))
-         id desc)
-    (with-current-buffer (find-file-noselect file)
-      (save-excursion
-        (goto-char pos)
-        (setq id (org-id-get-create))
-        (setq desc (org-get-heading t t t t))))
-    (insert (format "[[id:%s][%s]]" id desc))))
-
-(global-set-key (kbd "C-c i h") #'my/insert-link-to-org-heading)
-(which-key-add-key-based-replacements
-  "C-c i h" "heading")
 
 (defun prilepp/org-heading-complete (&optional _)
   "Select a heading via org-refile-targets for `org-insert-link' (C-c C-l);
