@@ -1,21 +1,17 @@
 [user]
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHbCrqQuome6l0siTb2C8G5vDR1jvPepyNX7GhBdJ/Sj
 	name = Carlos Driller
 	email = carlosdriller16@gmail.com
-
-[gpg]
-	format = ssh
-
-[gpg "ssh"]
-	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-	allowedSignersFile = /Users/cdriller/.ssh/allowed_signers
+	signingkey = 88D2756661CA5126BD953F042F3E6BD202E46A77
 
 [status]
 	short = true
 	branch = true
 
-[commit]
+[tag]
 	gpgsign = true
+
+[commit]
+	gpgsign = false
 [pull]
 	ff = only
 [init]

@@ -30,26 +30,6 @@
     (when (re-search-forward (concat "^" field "[^:]*:\\(.*\\)$") nil t)
       (string-trim (match-string 1)))))
 
-(defun prilepp/contact-find ()
-  "Search contacts in `vdirel-repository' by name and open the vCard."
-  (interactive)
-  (let* ((files (directory-files vdirel-repository t "\\.vcf\\'"))
-         (candidates (mapcar (lambda (f)
-                                (cons (or (prilepp/vcf-field f "FN")
-                                          (file-name-base f))
-                                      f))
-                              files))
-         (choice (completing-read "Contact: " candidates nil t))
-         (file (cdr (assoc choice candidates))))
-    (when file
-      (find-file-read-only file))))
-
-(with-eval-after-load 'vdirel
-  (define-key global-map (kbd "C-c f c c") #'prilepp/contact-find)
-  (which-key-add-key-based-replacements
-    "C-c f c" "contact"
-    "C-c f c c" "vcard"))
-
 (defun prilepp/vcf-uid-file (uid)
   "Return the vcf file in `vdirel-repository' whose UID matches UID, or nil."
   (seq-find (lambda (f) (equal (prilepp/vcf-field f "UID") uid))
@@ -100,9 +80,9 @@
       (user-error "Kontakt %s hat kein UID-Feld" choice))
     (org-set-property "CONTACT_UID" uid)))
 
-(global-set-key (kbd "C-c l p") #'prilepp/org-insert-contact-link)
+(global-set-key (kbd "C-c i p") #'prilepp/org-insert-contact-link)
 (which-key-add-key-based-replacements
-  "C-c l p" "contact")
+  "C-c i p" "contact")
 
 (defun prilepp/contact-uid-has-note (uid)
   "Return the file(s) containing CONTACT_UID: UID as a Person-Note, or nil."
@@ -114,33 +94,45 @@
                                     dir))
           (split-string (string-trim (buffer-string)) "\n"))))))
 
-(defun prilepp/new-person-note ()
-  "Create a new Person-Note for a contact in `prilepp/persons-directory',
-with CONTACT_UID pre-filled."
-  (interactive)
-  (let* ((candidates (prilepp/vcf-candidates))
-         (choice (completing-read "Contact: " candidates nil t))
-         (uid (prilepp/vcf-field (cdr (assoc choice candidates)) "UID")))
-    (unless uid
-      (user-error "Kontakt %s hat kein UID-Feld" choice))
-    (if-let ((existing (prilepp/contact-uid-has-note uid)))
-        (progn
-          (message "Person-Note existiert bereits: %s" (car existing))
-          (find-file (car existing)))
-      (let* ((dir (expand-file-name prilepp/persons-directory))
-             (file (expand-file-name
-                    (format "%s.org" (prilepp/slugify choice))
-                    dir)))
-        (make-directory dir t)
-        (with-temp-buffer
-          (insert (format ":PROPERTIES:\n:CONTACT_UID: %s\n:END:\n#+title: %s\n#+filetags: :person:\n"
-                          uid choice))
-          (write-file file))
-        (find-file file)))))
+(defun prilepp/vcf-create (name)
+  "Create a minimal vCard for NAME in `vdirel-repository'; return its UID."
+  (let* ((uid (org-id-uuid))
+         (file (expand-file-name (format "%s.vcf" uid) vdirel-repository)))
+    (with-temp-buffer
+      (insert (format "BEGIN:VCARD\nVERSION:3.0\nFN:%s\nUID:%s\nEND:VCARD\n" name uid))
+      (write-file file))
+    uid))
 
-(global-set-key (kbd "C-c f c p") #'prilepp/new-person-note)
-(which-key-add-key-based-replacements
-  "C-c f c p" "person")
+(defun prilepp/person-ensure-file (name)
+  "Ensure a Person-Note for the contact NAME exists in `prilepp/persons-directory';
+return its path. If no matching contact exists yet in `vdirel-repository',
+create one first."
+  (let* ((candidates (prilepp/vcf-candidates))
+         (existing-file (cdr (assoc name candidates)))
+         (uid (cond
+               ((null existing-file) (prilepp/vcf-create name))
+               ((prilepp/vcf-field existing-file "UID"))
+               (t (user-error "Kontakt %s hat kein UID-Feld" name)))))
+    (or (car (prilepp/contact-uid-has-note uid))
+        (let* ((dir (expand-file-name prilepp/persons-directory))
+               (file (expand-file-name
+                      (format "%s.org" (prilepp/slugify name))
+                      dir)))
+          (make-directory dir t)
+          (with-temp-buffer
+            (insert (format ":PROPERTIES:\n:CONTACT_UID: %s\n:END:\n#+title: %s\n#+filetags: :person:\n"
+                            uid name))
+            (write-file file))
+          file))))
+
+(defun prilepp/new-person-note-for (name)
+  "Create or open a Person-Note for the contact NAME."
+  (find-file (prilepp/person-ensure-file name)))
+
+(defun prilepp/new-person-note ()
+  "Create or open a Person-Note for a contact, prompting for the name."
+  (interactive)
+  (prilepp/new-person-note-for (completing-read "Contact: " (prilepp/vcf-candidates))))
 
 (provide 'init-contacts)
 ;;; init-contacts.el ends here

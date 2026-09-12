@@ -17,7 +17,7 @@ export VISUAL="nvim"
 export PAGER="bat"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
-export SSH_ASKPASS="$HOME/.local/bin/ssh-askpass-pass"
+export SSH_ASKPASS="$HOME/.local/bin/ssh-ask-pass.sh"
 export SSH_ASKPASS_REQUIRE=force
 
 echo "loaded: .zshenv"
