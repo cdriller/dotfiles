@@ -10,102 +10,38 @@
 ;; `prilepp/org-insert-project-link'/`prilepp/org-insert-area-link'/
 ;; `prilepp/org-insert-life-link'/`prilepp/org-insert-goal-link'/
 ;; `prilepp/org-insert-vision-link' to link to one from anywhere.
+;;
+;; Each of the five types below is defined via
+;; `prilepp/define-horizon-type' (see init-horizon-types.el) instead of
+;; by hand.
 
 ;;; Code:
 
-(defvar prilepp/proj-directory "~/notes/horizons/proj/"
-  "Directory containing one org file per project.")
+(prilepp/define-horizon-type proj
+  :directory "~/notes/horizons/proj/"
+  :list-fn prilepp/proj--list-projects
+  :find-fn prilepp/proj-find
+  :find-prompt "Project: "
+  :ensure-fn prilepp/proj-ensure-file
+  :default-content "#+TODO: TODO(t) WAITING(w) | DONE(d)\n\n* TODO %s\n"
+  :link-word "project"
+  :link-follow-fn prilepp/org-project-follow
+  :link-complete-fn prilepp/org-project-complete
+  :insert-fn prilepp/org-insert-project-link
+  :insert-prompt "Project: ")
 
-(defun prilepp/proj--list-projects ()
-  "Return the project names (without .org) under `prilepp/proj-directory'."
-  (let ((root (expand-file-name prilepp/proj-directory)))
-    (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
-
-(defun prilepp/proj-ensure-file (name)
-  "Ensure NAME's project file exists under `prilepp/proj-directory'; return its path."
-  (let ((file (expand-file-name (concat name ".org") prilepp/proj-directory)))
-    (unless (file-exists-p file)
-      (make-directory prilepp/proj-directory t)
-      (with-temp-buffer
-        (insert (format "#+TODO: TODO(t) WAITING(w) | DONE(d)\n\n* TODO %s\n" name))
-        (write-file file)))
-    file))
-
-(defun prilepp/proj-find ()
-  "Select a project under `prilepp/proj-directory' and open it,
-creating a new project file if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Project: " (prilepp/proj--list-projects))))
-    (find-file (prilepp/proj-ensure-file name))))
-
-(defun prilepp/org-project-follow (name &optional _)
-  "Follow a project link: open (or create) NAME's project file."
-  (find-file (prilepp/proj-ensure-file name)))
-
-(defun prilepp/org-project-complete (&optional _)
-  "Interactively select a project for `org-insert-link' (C-c C-l)."
-  (concat "project:" (completing-read "Project: " (prilepp/proj--list-projects))))
-
-(with-eval-after-load 'org
-  (org-link-set-parameters "project"
-                            :follow #'prilepp/org-project-follow
-                            :complete #'prilepp/org-project-complete))
-
-(defun prilepp/org-insert-project-link ()
-  "Select a project and insert `[[project:NAME][NAME]]' at point,
-creating the project if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Project: " (prilepp/proj--list-projects))))
-    (prilepp/proj-ensure-file name)
-    (insert (format "[[project:%s][%s]]" name name))))
-
-(defvar prilepp/aor-directory "~/notes/horizons/aor/"
-  "Directory containing one org file per area of responsibility.")
-
-(defun prilepp/aor--list-aors ()
-  "Return the AoR names (without .org) under `prilepp/aor-directory'."
-  (let ((root (expand-file-name prilepp/aor-directory)))
-    (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
-
-(defun prilepp/aor-ensure-file (name)
-  "Ensure NAME's AoR file exists under `prilepp/aor-directory'; return its path."
-  (let ((file (expand-file-name (concat name ".org") prilepp/aor-directory)))
-    (unless (file-exists-p file)
-      (make-directory prilepp/aor-directory t)
-      (with-temp-buffer (write-file file)))
-    file))
-
-(defun prilepp/aor-find ()
-  "Select an AoR under `prilepp/aor-directory' and open it,
-creating a new AoR file if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "AoR: " (prilepp/aor--list-aors))))
-    (find-file (prilepp/aor-ensure-file name))))
-
-(defun prilepp/org-area-follow (name &optional _)
-  "Follow an area link: open (or create) NAME's AoR file."
-  (find-file (prilepp/aor-ensure-file name)))
-
-(defun prilepp/org-area-complete (&optional _)
-  "Interactively select an AoR for `org-insert-link' (C-c C-l)."
-  (concat "area:" (completing-read "Area: " (prilepp/aor--list-aors))))
-
-(with-eval-after-load 'org
-  (org-link-set-parameters "area"
-                            :follow #'prilepp/org-area-follow
-                            :complete #'prilepp/org-area-complete))
-
-(defun prilepp/org-insert-area-link ()
-  "Select an area and insert `[[area:NAME][NAME]]' at point,
-creating the area if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Area: " (prilepp/aor--list-aors))))
-    (prilepp/aor-ensure-file name)
-    (insert (format "[[area:%s][%s]]" name name))))
+(prilepp/define-horizon-type aor
+  :directory "~/notes/horizons/aor/"
+  :list-fn prilepp/aor--list-aors
+  :find-fn prilepp/aor-find
+  :find-prompt "AoR: "
+  :ensure-fn prilepp/aor-ensure-file
+  :default-content nil
+  :link-word "area"
+  :link-follow-fn prilepp/org-area-follow
+  :link-complete-fn prilepp/org-area-complete
+  :insert-fn prilepp/org-insert-area-link
+  :insert-prompt "Area: ")
 
 (defun prilepp/routine--candidates ()
   "Return an alist of (HEADING-TITLE . MARKER) for every routine
@@ -148,143 +84,44 @@ template at point."
         (prilepp/routine-jump (cdr existing))
       (prilepp/routine-insert-new choice))))
 
-(defvar prilepp/life-directory "~/notes/horizons/life/"
-  "Directory containing one org file per life-horizon entry.")
+(prilepp/define-horizon-type life
+  :directory "~/notes/horizons/life/"
+  :list-fn prilepp/life--list-entries
+  :find-fn prilepp/life-find
+  :find-prompt "Life: "
+  :ensure-fn prilepp/life-ensure-file
+  :default-content nil
+  :link-word "life"
+  :link-follow-fn prilepp/org-life-follow
+  :link-complete-fn prilepp/org-life-complete
+  :insert-fn prilepp/org-insert-life-link
+  :insert-prompt "Life: ")
 
-(defun prilepp/life--list-entries ()
-  "Return the entry names (without .org) under `prilepp/life-directory'."
-  (let ((root (expand-file-name prilepp/life-directory)))
-    (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
+(prilepp/define-horizon-type goals
+  :directory "~/notes/horizons/goals/"
+  :list-fn prilepp/goals--list-entries
+  :find-fn prilepp/goals-find
+  :find-prompt "Goal: "
+  :ensure-fn prilepp/goals-ensure-file
+  :default-content nil
+  :link-word "goal"
+  :link-follow-fn prilepp/org-goal-follow
+  :link-complete-fn prilepp/org-goal-complete
+  :insert-fn prilepp/org-insert-goal-link
+  :insert-prompt "Goal: ")
 
-(defun prilepp/life-ensure-file (name)
-  "Ensure NAME's life-horizon file exists under `prilepp/life-directory'; return its path."
-  (let ((file (expand-file-name (concat name ".org") prilepp/life-directory)))
-    (unless (file-exists-p file)
-      (make-directory prilepp/life-directory t)
-      (with-temp-buffer (write-file file)))
-    file))
-
-(defun prilepp/life-find ()
-  "Select a life-horizon entry under `prilepp/life-directory' and open it,
-creating a new entry file if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Life: " (prilepp/life--list-entries))))
-    (find-file (prilepp/life-ensure-file name))))
-
-(defun prilepp/org-life-follow (name &optional _)
-  "Follow a life link: open (or create) NAME's life-horizon file."
-  (find-file (prilepp/life-ensure-file name)))
-
-(defun prilepp/org-life-complete (&optional _)
-  "Interactively select a life-horizon entry for `org-insert-link' (C-c C-l)."
-  (concat "life:" (completing-read "Life: " (prilepp/life--list-entries))))
-
-(with-eval-after-load 'org
-  (org-link-set-parameters "life"
-                            :follow #'prilepp/org-life-follow
-                            :complete #'prilepp/org-life-complete))
-
-(defun prilepp/org-insert-life-link ()
-  "Select a life-horizon entry and insert `[[life:NAME][NAME]]' at point,
-creating the entry if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Life: " (prilepp/life--list-entries))))
-    (prilepp/life-ensure-file name)
-    (insert (format "[[life:%s][%s]]" name name))))
-
-(defvar prilepp/goals-directory "~/notes/horizons/goals/"
-  "Directory containing one org file per goal.")
-
-(defun prilepp/goals--list-entries ()
-  "Return the goal names (without .org) under `prilepp/goals-directory'."
-  (let ((root (expand-file-name prilepp/goals-directory)))
-    (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
-
-(defun prilepp/goals-ensure-file (name)
-  "Ensure NAME's goal file exists under `prilepp/goals-directory'; return its path."
-  (let ((file (expand-file-name (concat name ".org") prilepp/goals-directory)))
-    (unless (file-exists-p file)
-      (make-directory prilepp/goals-directory t)
-      (with-temp-buffer (write-file file)))
-    file))
-
-(defun prilepp/goals-find ()
-  "Select a goal under `prilepp/goals-directory' and open it,
-creating a new goal file if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Goal: " (prilepp/goals--list-entries))))
-    (find-file (prilepp/goals-ensure-file name))))
-
-(defun prilepp/org-goal-follow (name &optional _)
-  "Follow a goal link: open (or create) NAME's goal file."
-  (find-file (prilepp/goals-ensure-file name)))
-
-(defun prilepp/org-goal-complete (&optional _)
-  "Interactively select a goal for `org-insert-link' (C-c C-l)."
-  (concat "goal:" (completing-read "Goal: " (prilepp/goals--list-entries))))
-
-(with-eval-after-load 'org
-  (org-link-set-parameters "goal"
-                            :follow #'prilepp/org-goal-follow
-                            :complete #'prilepp/org-goal-complete))
-
-(defun prilepp/org-insert-goal-link ()
-  "Select a goal and insert `[[goal:NAME][NAME]]' at point,
-creating the goal if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Goal: " (prilepp/goals--list-entries))))
-    (prilepp/goals-ensure-file name)
-    (insert (format "[[goal:%s][%s]]" name name))))
-
-(defvar prilepp/vision-directory "~/notes/horizons/vision/"
-  "Directory containing one org file per vision item.")
-
-(defun prilepp/vision--list-entries ()
-  "Return the vision-item names (without .org) under `prilepp/vision-directory'."
-  (let ((root (expand-file-name prilepp/vision-directory)))
-    (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
-
-(defun prilepp/vision-ensure-file (name)
-  "Ensure NAME's vision file exists under `prilepp/vision-directory'; return its path."
-  (let ((file (expand-file-name (concat name ".org") prilepp/vision-directory)))
-    (unless (file-exists-p file)
-      (make-directory prilepp/vision-directory t)
-      (with-temp-buffer (write-file file)))
-    file))
-
-(defun prilepp/vision-find ()
-  "Select a vision item under `prilepp/vision-directory' and open it,
-creating a new vision file if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Vision: " (prilepp/vision--list-entries))))
-    (find-file (prilepp/vision-ensure-file name))))
-
-(defun prilepp/org-vision-follow (name &optional _)
-  "Follow a vision link: open (or create) NAME's vision file."
-  (find-file (prilepp/vision-ensure-file name)))
-
-(defun prilepp/org-vision-complete (&optional _)
-  "Interactively select a vision item for `org-insert-link' (C-c C-l)."
-  (concat "vision:" (completing-read "Vision: " (prilepp/vision--list-entries))))
-
-(with-eval-after-load 'org
-  (org-link-set-parameters "vision"
-                            :follow #'prilepp/org-vision-follow
-                            :complete #'prilepp/org-vision-complete))
-
-(defun prilepp/org-insert-vision-link ()
-  "Select a vision item and insert `[[vision:NAME][NAME]]' at point,
-creating the vision item if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Vision: " (prilepp/vision--list-entries))))
-    (prilepp/vision-ensure-file name)
-    (insert (format "[[vision:%s][%s]]" name name))))
+(prilepp/define-horizon-type vision
+  :directory "~/notes/horizons/vision/"
+  :list-fn prilepp/vision--list-entries
+  :find-fn prilepp/vision-find
+  :find-prompt "Vision: "
+  :ensure-fn prilepp/vision-ensure-file
+  :default-content nil
+  :link-word "vision"
+  :link-follow-fn prilepp/org-vision-follow
+  :link-complete-fn prilepp/org-vision-complete
+  :insert-fn prilepp/org-insert-vision-link
+  :insert-prompt "Vision: ")
 
 (provide 'init-projects)
 ;;; init-projects.el ends here

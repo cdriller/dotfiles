@@ -1,8 +1,4 @@
-## Purpose
-
-Defines the structured `C-c`-prefix keybindings in the Emacs config so that a single "nodes" picker covers every link/navigation target ("nodes") with open/insert/copy actions, and `C-c v` remains the home for cross-location aggregation ("views"), all discoverable via which-key.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Unified node picker
 
@@ -37,47 +33,3 @@ For the six node types that support archiving (Action, Project, Area, Goal, Visi
 #### Scenario: Non-archivable node types are unaffected
 - **WHEN** the user presses `C-c n` and narrows to the Zettel, Literature, Person, Routine, Someday, Agenda, or Heading source
 - **THEN** the candidates shown are exactly the same as before this capability existed - no archived/low-priority grouping applies to these sources
-
-### Requirement: Someday as a node
-
-The `C-c n` picker SHALL include `someday.org` as a selectable node candidate. RET SHALL open `someday.org`; `C-i` SHALL insert a link to it; `C-c` SHALL copy a link to it. `someday.org` SHALL NOT be reachable via a standalone `C-c s` binding after this change.
-
-#### Scenario: Opening someday.org via the picker
-- **WHEN** the user presses `C-c n`, selects the Someday candidate, and presses RET
-- **THEN** Emacs opens `someday.org`
-
-#### Scenario: Old someday binding removed
-- **WHEN** the user presses `C-c s`
-- **THEN** Emacs reports no binding is defined for that key
-
-### Requirement: Org heading as a node
-
-The `C-c n` picker SHALL include a Heading source that searches org headings across `org-refile-targets` (the same target set previously used by `my/insert-link-to-org-heading`). RET SHALL jump to the selected heading; `C-i` SHALL insert a link to it; `C-c` SHALL copy a link to it.
-
-#### Scenario: Inserting a link to a heading via the picker
-- **WHEN** the user presses `C-c n`, narrows to the Heading source, selects a heading, and presses `C-i`
-- **THEN** Emacs inserts an `id:` link to that heading at point, equivalent to what `C-c i h` did before this change
-
-### Requirement: Which-key label for the node picker
-
-The system SHALL register a which-key label for `C-c n` describing it as the unified node picker (e.g. "nodes"), replacing the previous "find entity" label that was shown for `C-c o`.
-
-#### Scenario: which-key shows the node label
-- **WHEN** the user presses `C-c n` and pauses before completing the picker's prompt
-- **THEN** which-key displays the "nodes" label for that binding
-
-### Requirement: Redundant single-purpose node bindings removed
-
-The system SHALL NOT bind `C-c i` or any of its former leaves (`C-c i z`, `C-c i l`, `C-c i j`, `C-c i a`, `C-c i i`, `C-c i g`, `C-c i v`, `C-c i p`, `C-c i h`) after this change, since their functionality is superseded by the `C-c n` picker's `C-i` insert action.
-
-#### Scenario: Old insert prefix is no longer bound
-- **WHEN** the user presses `C-c i`
-- **THEN** Emacs reports no binding is defined for that prefix
-
-### Requirement: View prefix group remains the home for aggregation views
-
-The system SHALL continue to expose the existing `C-c v` prefix group ("view") with its current leaf bindings (backlinks, roam-ui, calendar, deadlines) unchanged, and this group SHALL remain the designated location for future cross-location aggregation views (e.g. a future "waiting for" view) added in later changes.
-
-#### Scenario: Existing view bindings unaffected
-- **WHEN** the user presses `C-c v d`
-- **THEN** Emacs invokes the deadlines agenda view exactly as before this change

@@ -40,32 +40,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GTD horizons of focus
 
-(defvar prilepp/actions-directory "~/notes/horizons/actions/"
-  "Directory containing one org file per GTD context (horizon 0).")
-
-(defun prilepp/actions--list-contexts ()
-  "Return the context names (without .org) under `prilepp/actions-directory'."
-  (let ((root (expand-file-name prilepp/actions-directory)))
-    (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
-
-(defun prilepp/actions-ensure-file (name)
-  "Ensure NAME's context file exists under `prilepp/actions-directory'; return its path."
-  (let ((file (expand-file-name (concat name ".org") prilepp/actions-directory)))
-    (unless (file-exists-p file)
-      (make-directory prilepp/actions-directory t)
-      (with-temp-buffer
-        (insert "#+TODO: TODO(t) WAITING(w) | DONE(d)\n\n")
-        (write-file file)))
-    file))
-
-(defun prilepp/actions-find ()
-  "Select a context under `prilepp/actions-directory' and open it,
-creating a new context file if it doesn't exist yet."
-  (interactive)
-  (let ((name (completing-read "Context: " (prilepp/actions--list-contexts))))
-    (find-file (prilepp/actions-ensure-file name))))
+(prilepp/define-horizon-type actions
+  :directory "~/notes/horizons/actions/"
+  :list-fn prilepp/actions--list-contexts
+  :find-fn prilepp/actions-find
+  :find-prompt "Context: "
+  :ensure-fn prilepp/actions-ensure-file
+  :default-content "#+TODO: TODO(t) WAITING(w) | DONE(d)\n\n"
+  :link-word nil)
 
 (setq org-agenda-custom-commands
       '(("d" "Deadlines (Actions)" agenda ""
