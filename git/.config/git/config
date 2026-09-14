@@ -18,20 +18,12 @@
 	defaultBranch = main
 [core]
 	editor = nvim
-	pager = delta
 [advice]
 	forceDeleteBranch = false
 	detachedHead = false
 [fetch]
 	prune = true
 	verbose = true
-
-[interactive]
-    diffFilter = delta --color-only
-
-[delta]
-    navigate = true
-    side-by-side = false
 
 [merge]
     conflictStyle = zdiff3
