@@ -16,9 +16,9 @@
 
 ## 4. Pickers (init-find-entity.el, init-files.el)
 
-- [ ] 4.1 Rework the Action/Project/Area/Goal/Vision/Life sources in `prilepp/entity-sources` to use entry labels as `:items`, resolve label→entry in `:action`, `:new` (miss ⇒ typed text is the new NAME), `:annotate` (archived marker) and `:link` (`[[file:PATH][TITLE]]`), removing the six-fold duplication if a small shared builder does it more simply; verify by byte-compiling init-find-entity.el and, in a running Emacs with `M-x eval-buffer` on the changed files, opening `C-c n` and checking that a titled project shows its title, RET opens the right file, `C-i` inserts a link with the right target and description, and typing an unused name creates `NAME.org` starting with `#+title: NAME`
-- [ ] 4.2 Update `prilepp/action-move-to-context` to complete over action-context labels and map back to NAME; verify with a titled context file that the subtree lands in the correct file
-- [ ] 4.3 Confirm `prilepp/read-entity-link` (used for `WAITING_FOR`) shows titles for horizon sources without further code changes; verify by setting an action to WAITING and picking a titled project
+- [x] 4.1 Rework the Action/Project/Area/Goal/Vision/Life sources in `prilepp/entity-sources` to use entry labels as `:items`, resolve label→entry in `:action`, `:new` (miss ⇒ typed text is the new NAME), `:annotate` (archived marker) and `:link` (`[[file:PATH][TITLE]]`), removing the six-fold duplication if a small shared builder does it more simply; verify by byte-compiling init-find-entity.el and, in a running Emacs with `M-x eval-buffer` on the changed files, opening `C-c n` and checking that a titled project shows its title, RET opens the right file, `C-i` inserts a link with the right target and description, and typing an unused name creates `NAME.org` starting with `#+title: NAME`
+- [x] 4.2 Update `prilepp/action-move-to-context` to complete over action-context labels and map back to NAME; verify with a titled context file that the subtree lands in the correct file
+- [x] 4.3 Confirm `prilepp/read-entity-link` (used for `WAITING_FOR`) shows titles for horizon sources without further code changes; verify by setting an action to WAITING and picking a titled project
 
 ## 5. End-to-end verification
 

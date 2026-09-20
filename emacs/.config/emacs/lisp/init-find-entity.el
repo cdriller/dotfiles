@@ -26,6 +26,9 @@
 
 ;;; Code:
 
+(require 'init-horizon-types)
+(require 'init-horizon-archive)
+
 (defun prilepp/org-roam-node-by-title (title)
   "Return the org-roam node with TITLE, or nil."
   (seq-find (lambda (nd) (equal (org-roam-node-title nd) title))
@@ -78,58 +81,39 @@ the enclosing `prilepp/find-entity' call."
   (interactive)
   (prilepp/find-entity--act 'copy))
 
+(defun prilepp/entity-sources--horizon (name narrow slug)
+  "Return a `consult--multi' source NAME (narrow key NARROW) for horizon SLUG.
+Candidates are entry labels (file titles); an unknown typed label is a
+new entry name."
+  (let* ((ensure-fn (plist-get (alist-get slug prilepp/horizon-types) :ensure-fn))
+         (entries (prilepp/horizon-entries slug t))
+         (archived (prilepp/horizon-archived-names slug))
+         (resolve (lambda (label)
+                    (or (assoc label entries) (list label label label))))
+         (open (lambda (label)
+                 (find-file (funcall ensure-fn (nth 1 (funcall resolve label)))))))
+    `(:name ,name :narrow ,narrow
+      :items ,(mapcar #'car entries)
+      :annotate ,(lambda (label)
+                   (when (member (nth 1 (funcall resolve label)) archived)
+                     (propertize " (archiviert)" 'face 'completions-annotations)))
+      :action ,open
+      :new ,open
+      :link ,(lambda (label)
+               (let ((entry (funcall resolve label)))
+                 (format "[[file:%s][%s]]"
+                         (funcall ensure-fn (nth 1 entry)) (nth 2 entry)))))))
+
 (defun prilepp/entity-sources ()
   "Return the list of `consult--multi' sources used by `prilepp/find-entity'
 and `prilepp/read-entity-link'."
   (list
-           (let ((archived (prilepp/horizon-archived-names 'actions)))
-             `(:name "Action" :narrow ?0
-               :items ,(lambda () (append (prilepp/actions--list-contexts) archived))
-               :annotate ,(lambda (n) (when (member n archived)
-                                         (propertize " (archiviert)" 'face 'completions-annotations)))
-               :action ,(lambda (n) (find-file (prilepp/actions-ensure-file n)))
-               :new ,(lambda (n) (find-file (prilepp/actions-ensure-file n)))
-               :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/actions-ensure-file n) n))))
-           (let ((archived (prilepp/horizon-archived-names 'proj)))
-             `(:name "Project" :narrow ?1
-               :items ,(lambda () (append (prilepp/proj--list-projects) archived))
-               :annotate ,(lambda (n) (when (member n archived)
-                                         (propertize " (archiviert)" 'face 'completions-annotations)))
-               :action ,(lambda (n) (find-file (prilepp/proj-ensure-file n)))
-               :new ,(lambda (n) (find-file (prilepp/proj-ensure-file n)))
-               :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/proj-ensure-file n) n))))
-           (let ((archived (prilepp/horizon-archived-names 'aor)))
-             `(:name "Area" :narrow ?2
-               :items ,(lambda () (append (prilepp/aor--list-aors) archived))
-               :annotate ,(lambda (n) (when (member n archived)
-                                         (propertize " (archiviert)" 'face 'completions-annotations)))
-               :action ,(lambda (n) (find-file (prilepp/aor-ensure-file n)))
-               :new ,(lambda (n) (find-file (prilepp/aor-ensure-file n)))
-               :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/aor-ensure-file n) n))))
-           (let ((archived (prilepp/horizon-archived-names 'goals)))
-             `(:name "Goal" :narrow ?3
-               :items ,(lambda () (append (prilepp/goals--list-entries) archived))
-               :annotate ,(lambda (n) (when (member n archived)
-                                         (propertize " (archiviert)" 'face 'completions-annotations)))
-               :action ,(lambda (n) (find-file (prilepp/goals-ensure-file n)))
-               :new ,(lambda (n) (find-file (prilepp/goals-ensure-file n)))
-               :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/goals-ensure-file n) n))))
-           (let ((archived (prilepp/horizon-archived-names 'vision)))
-             `(:name "Vision" :narrow ?4
-               :items ,(lambda () (append (prilepp/vision--list-entries) archived))
-               :annotate ,(lambda (n) (when (member n archived)
-                                         (propertize " (archiviert)" 'face 'completions-annotations)))
-               :action ,(lambda (n) (find-file (prilepp/vision-ensure-file n)))
-               :new ,(lambda (n) (find-file (prilepp/vision-ensure-file n)))
-               :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/vision-ensure-file n) n))))
-           (let ((archived (prilepp/horizon-archived-names 'life)))
-             `(:name "Life" :narrow ?5
-               :items ,(lambda () (append (prilepp/life--list-entries) archived))
-               :annotate ,(lambda (n) (when (member n archived)
-                                         (propertize " (archiviert)" 'face 'completions-annotations)))
-               :action ,(lambda (n) (find-file (prilepp/life-ensure-file n)))
-               :new ,(lambda (n) (find-file (prilepp/life-ensure-file n)))
-               :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/life-ensure-file n) n))))
+           (prilepp/entity-sources--horizon "Action" ?0 'actions)
+           (prilepp/entity-sources--horizon "Project" ?1 'proj)
+           (prilepp/entity-sources--horizon "Area" ?2 'aor)
+           (prilepp/entity-sources--horizon "Goal" ?3 'goals)
+           (prilepp/entity-sources--horizon "Vision" ?4 'vision)
+           (prilepp/entity-sources--horizon "Life" ?5 'life)
            `(:name "Agenda" :narrow ?a
              :items ,#'prilepp/agendas--list-entries
              :action ,(lambda (n) (find-file (prilepp/agendas-ensure-file n)))

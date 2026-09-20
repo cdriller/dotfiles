@@ -69,7 +69,10 @@
 `prilepp/actions-directory', creating the context if it doesn't exist yet."
   (interactive)
   (let* ((current (buffer-file-name))
-         (choice (completing-read "Move to context: " (prilepp/actions--list-contexts)))
+         (entries (prilepp/horizon-entries 'actions))
+         (choice (prilepp/horizon-entry-name
+                  (completing-read "Move to context: " (mapcar #'car entries))
+                  entries))
          (target (prilepp/actions-ensure-file choice)))
     (when (and current (equal (expand-file-name target) (expand-file-name current)))
       (user-error "Already in context \"%s\"" choice))
