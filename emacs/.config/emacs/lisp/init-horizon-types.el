@@ -45,6 +45,81 @@
   "Upsert PLIST as the registered metadata for horizon-type SLUG."
   (setf (alist-get slug prilepp/horizon-types) plist))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Entry titles: pickers show a file's `#+title:' instead of its filename
+
+(defvar prilepp/horizon--title-cache (make-hash-table :test #'equal)
+  "Map from absolute file name to (MTIME . TITLE) for `prilepp/horizon-file-title'.")
+
+(defun prilepp/horizon--read-title (file)
+  "Return the `#+title:' value in the head of FILE, or nil.
+Only the first 4 KiB before the first org heading are considered."
+  (with-temp-buffer
+    (insert-file-contents file nil 0 4096)
+    (goto-char (point-min))
+    (let ((case-fold-search t)
+          (limit (save-excursion
+                   (if (re-search-forward "^\\*+[ \t]" nil t)
+                       (match-beginning 0)
+                     (point-max)))))
+      (when (re-search-forward "^#\\+title:[ \t]*\\(.+\\)$" limit t)
+        (let ((title (string-trim (match-string 1))))
+          (unless (string-empty-p title) title))))))
+
+(defun prilepp/horizon-file-title (file)
+  "Return the `#+title:' of FILE, or nil if it has none.
+Results are cached per file and revalidated against its modification time."
+  (let* ((path (expand-file-name file))
+         (mtime (file-attribute-modification-time (file-attributes path)))
+         (cached (gethash path prilepp/horizon--title-cache)))
+    (when mtime
+      (if (and cached (time-equal-p (car cached) mtime))
+          (cdr cached)
+        (let ((title (prilepp/horizon--read-title path)))
+          (puthash path (cons mtime title) prilepp/horizon--title-cache)
+          title)))))
+
+(defun prilepp/horizon--label-entries (pairs)
+  "Turn PAIRS, a list of (NAME . TITLE-OR-NIL), into (LABEL NAME TITLE) entries.
+TITLE falls back to NAME. LABEL is TITLE, with \" (NAME)\" appended when
+another entry would show the same label."
+  (let* ((entries (mapcar (lambda (pair)
+                            (let ((title (or (cdr pair) (car pair))))
+                              (list title (car pair) title)))
+                          pairs))
+         (counts (make-hash-table :test #'equal)))
+    (dolist (entry entries)
+      (cl-incf (gethash (car entry) counts 0)))
+    (mapcar (lambda (entry)
+              (if (> (gethash (car entry) counts) 1)
+                  (list (format "%s (%s)" (nth 2 entry) (nth 1 entry))
+                        (nth 1 entry) (nth 2 entry))
+                entry))
+            entries)))
+
+(declare-function prilepp/horizon-archived-entries "init-horizon-archive" (slug))
+
+(defun prilepp/horizon-entries (slug &optional include-archived)
+  "Return (LABEL NAME TITLE) entries for the horizon type SLUG.
+NAME is the filename without .org, TITLE the file's `#+title:' (or NAME),
+and LABEL the unique string pickers show. Active entries come first;
+with INCLUDE-ARCHIVED the archived ones follow."
+  (let* ((plist (alist-get slug prilepp/horizon-types))
+         (root (expand-file-name (symbol-value (plist-get plist :directory-var)))))
+    (prilepp/horizon--label-entries
+     (append
+      (mapcar (lambda (name)
+                (cons name (prilepp/horizon-file-title
+                            (expand-file-name (concat name ".org") root))))
+              (funcall (plist-get plist :list-fn)))
+      (when include-archived
+        (prilepp/horizon-archived-entries slug))))))
+
+(defun prilepp/horizon-entry-name (label entries)
+  "Return the NAME of the entry in ENTRIES labelled LABEL.
+A LABEL that matches no entry is a name the user typed, and is its own NAME."
+  (or (nth 1 (assoc label entries)) label))
+
 (cl-defmacro prilepp/define-horizon-type
     (slug &key directory list-fn find-fn find-prompt ensure-fn
           default-content link-word link-follow-fn link-complete-fn
@@ -67,8 +142,13 @@ org link type named LINK-WORD via `org-link-set-parameters', defines
 LINK-FOLLOW-FN and LINK-COMPLETE-FN as its :follow/:complete handlers,
 and defines INSERT-FN as an interactive command that inserts a
 \"[[LINK-WORD:NAME][NAME]]\" link at point, prompting with
-INSERT-PROMPT. When LINK-WORD is nil, none of link-related forms are
-generated."
+INSERT-PROMPT. Entries are offered by their file's `#+title:' (see
+`prilepp/horizon-entries'); the link target stays the filename and the
+description is the title. When LINK-WORD is nil, none of link-related
+forms are generated.
+
+A new entry file always starts with \"#+title: NAME\", followed by
+DEFAULT-CONTENT."
   (let ((directory-var (intern (format "prilepp/%s-directory" slug))))
     `(progn
        (defvar ,directory-var ,directory
@@ -96,6 +176,7 @@ generated."
            (unless (file-exists-p file)
              (make-directory ,directory-var t)
              (with-temp-buffer
+               (insert (format "#+title: %s\n" name))
                ,(cond
                  ((null default-content) nil)
                  ((and (stringp default-content) (string-match-p "%s" default-content))
@@ -108,8 +189,9 @@ generated."
          ,(format "Select an entry under `%s' and open it,
 creating a new file if it doesn't exist yet." directory-var)
          (interactive)
-         (let ((name (completing-read ,find-prompt (,list-fn))))
-           (find-file (,ensure-fn name))))
+         (let* ((entries (prilepp/horizon-entries ',slug))
+                (label (completing-read ,find-prompt (mapcar #'car entries))))
+           (find-file (,ensure-fn (prilepp/horizon-entry-name label entries)))))
 
        ,@(when link-word
            `((defun ,link-follow-fn (name &optional _)
@@ -118,7 +200,9 @@ creating a new file if it doesn't exist yet." directory-var)
 
              (defun ,link-complete-fn (&optional _)
                ,(format "Interactively select an entry for `org-insert-link' (C-c C-l)." )
-               (concat ,(concat link-word ":") (completing-read ,insert-prompt (,list-fn))))
+               (let* ((entries (prilepp/horizon-entries ',slug))
+                      (label (completing-read ,insert-prompt (mapcar #'car entries))))
+                 (concat ,(concat link-word ":") (prilepp/horizon-entry-name label entries))))
 
              (with-eval-after-load 'org
                (org-link-set-parameters ,link-word
@@ -126,12 +210,16 @@ creating a new file if it doesn't exist yet." directory-var)
                                          :complete #',link-complete-fn))
 
              (defun ,insert-fn ()
-               ,(format "Select an entry and insert `[[%s:NAME][NAME]]' at point,
+               ,(format "Select an entry and insert `[[%s:NAME][TITLE]]' at point,
 creating the entry if it doesn't exist yet." link-word)
                (interactive)
-               (let ((name (completing-read ,insert-prompt (,list-fn))))
+               (let* ((entries (prilepp/horizon-entries ',slug))
+                      (label (completing-read ,insert-prompt (mapcar #'car entries)))
+                      (entry (assoc label entries))
+                      (name (or (nth 1 entry) label))
+                      (title (or (nth 2 entry) name)))
                  (,ensure-fn name)
-                 (insert (format ,(concat "[[" link-word ":%s][%s]]") name name)))))))))
+                 (insert (format ,(concat "[[" link-word ":%s][%s]]") name title)))))))))
 
 (provide 'init-horizon-types)
 ;;; init-horizon-types.el ends here
