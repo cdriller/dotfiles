@@ -23,4 +23,4 @@
 ## 5. End-to-end verification
 
 - [ ] 5.1 Manually verify in a running Emacs against real notes: add `#+title:` to one file per horizon type, check `C-c n` (active and archived entries, disambiguation with two same-title copies), find, insert-link, `C-c a a`/`C-c a r`, and confirm untitled files still show their filenames and existing `[[project:...]]` links still open the same files
-- [ ] 5.2 Run `openspec validate dynamic-heading-for-horizons --strict` and confirm it passes
+- [x] 5.2 Run `openspec validate dynamic-heading-for-horizons --strict` and confirm it passes
