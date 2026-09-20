@@ -40,13 +40,25 @@
 ;; Archive / restore commands
 
 (defun prilepp/horizon-archived-names (slug)
-  "Return the archived entry names (without .org) for horizon-type SLUG,
-or nil if that type has no archive directory yet."
+  "Return the archived entry names (without .org) for horizon-type SLUG
+that have no active counterpart, or nil if that type has no archive
+directory yet.
+
+A name is excluded here (even though a file for it exists under the
+archive directory) when an active file of the same name also exists -
+e.g. an actions context file that has had individual headings archived
+out of it via `org-archive-subtree' while the file itself stays active.
+Such a name is not a restorable/low-priority \"archived entry\" in the
+sense `prilepp/restore-entry' and the `C-c n' picker mean; it is simply
+the active entry, which already appears in the active list."
   (let* ((directory-var (plist-get (alist-get slug prilepp/horizon-types) :directory-var))
-         (root (prilepp/archive-path (expand-file-name (symbol-value directory-var)))))
+         (active-root (expand-file-name (symbol-value directory-var)))
+         (root (prilepp/archive-path active-root)))
     (when (file-directory-p root)
-      (mapcar #'file-name-sans-extension
-              (directory-files root nil "\\.org\\'")))))
+      (seq-remove
+       (lambda (name) (file-exists-p (expand-file-name (concat name ".org") active-root)))
+       (mapcar #'file-name-sans-extension
+               (directory-files root nil "\\.org\\'"))))))
 
 (defun prilepp/horizon-type--prompt (prompt)
   "Read a registered horizon-type slug with PROMPT; return its registry entry."
@@ -113,16 +125,23 @@ mirrored active path."
 
 (defun prilepp/ensure-file--check-archive (directory-var orig-fn name)
   "Around-advice for a horizon type's ensure-fn (whose directory variable
-is DIRECTORY-VAR): if NAME exists in the mirrored archive directory,
-return that archived path directly instead of calling ORIG-FN (which
-would otherwise create a new empty active file); otherwise call ORIG-FN
-unchanged."
-  (let ((archived-file (expand-file-name
-                         (concat name ".org")
-                         (prilepp/archive-path (symbol-value directory-var)))))
-    (if (file-exists-p archived-file)
-        archived-file
-      (funcall orig-fn name))))
+is DIRECTORY-VAR): if no active file exists for NAME but one exists in
+the mirrored archive directory, return that archived path directly
+instead of calling ORIG-FN (which would otherwise create a new empty
+active file). If an active file already exists for NAME - even when an
+archive-mirrored file of the same name also exists, e.g. an actions
+context file that has had individual headings archived out of it while
+the file itself stays active - ORIG-FN (and therefore the active file)
+always takes precedence."
+  (let ((active-file (expand-file-name (concat name ".org") (symbol-value directory-var))))
+    (if (file-exists-p active-file)
+        (funcall orig-fn name)
+      (let ((archived-file (expand-file-name
+                             (concat name ".org")
+                             (prilepp/archive-path (symbol-value directory-var)))))
+        (if (file-exists-p archived-file)
+            archived-file
+          (funcall orig-fn name))))))
 
 (dolist (registered prilepp/horizon-types)
   (let* ((plist (cdr registered))
