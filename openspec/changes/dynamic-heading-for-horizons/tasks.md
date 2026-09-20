@@ -11,8 +11,8 @@
 
 ## 3. Archive integration (init-horizon-archive.el)
 
-- [ ] 3.1 Add an archived-entries variant that builds `(LABEL NAME TITLE)` from `prilepp/horizon-archived-names` using the titles in the archived files, and make `prilepp/horizon-entries` use it for `include-archived`; verify in batch against a temp notes tree (active + archived files of the same type) that archived labels come after active ones and use the archived file's title
-- [ ] 3.2 Update `prilepp/archive-entry` and `prilepp/restore-entry` to offer labels and resolve the selection to NAME before moving files; verify in batch (stubbed `completing-read`) that archiving/restoring a titled entry moves the file named by NAME and not one named by the title
+- [x] 3.1 Add an archived-entries variant that builds `(LABEL NAME TITLE)` from `prilepp/horizon-archived-names` using the titles in the archived files, and make `prilepp/horizon-entries` use it for `include-archived`; verify in batch against a temp notes tree (active + archived files of the same type) that archived labels come after active ones and use the archived file's title
+- [x] 3.2 Update `prilepp/archive-entry` and `prilepp/restore-entry` to offer labels and resolve the selection to NAME before moving files; verify in batch (stubbed `completing-read`) that archiving/restoring a titled entry moves the file named by NAME and not one named by the title
 
 ## 4. Pickers (init-find-entity.el, init-files.el)
 

@@ -60,6 +60,17 @@ the active entry, which already appears in the active list."
        (mapcar #'file-name-sans-extension
                (directory-files root nil "\\.org\\'"))))))
 
+(defun prilepp/horizon-archived-entries (slug)
+  "Return (NAME . TITLE) pairs for the archived entries of horizon-type SLUG.
+TITLE is the `#+title:' of the archived file, or nil. Feeds
+`prilepp/horizon-entries', which builds the labels."
+  (let* ((directory-var (plist-get (alist-get slug prilepp/horizon-types) :directory-var))
+         (root (prilepp/archive-path (expand-file-name (symbol-value directory-var)))))
+    (mapcar (lambda (name)
+              (cons name (prilepp/horizon-file-title
+                          (expand-file-name (concat name ".org") root))))
+            (prilepp/horizon-archived-names slug))))
+
 (defun prilepp/horizon-type--prompt (prompt)
   "Read a registered horizon-type slug with PROMPT; return its registry entry."
   (let ((slug (intern (completing-read
@@ -91,9 +102,11 @@ existing active entry of that type, and move its file to the mirrored
 archive path."
   (interactive)
   (let* ((entry (prilepp/horizon-type--prompt "Archive type: "))
-         (list-fn (plist-get entry :list-fn))
          (directory-var (plist-get entry :directory-var))
-         (name (completing-read "Archive entry: " (funcall list-fn) nil t))
+         (entries (prilepp/horizon-entries (plist-get entry :slug)))
+         (name (prilepp/horizon-entry-name
+                (completing-read "Archive entry: " (mapcar #'car entries) nil t)
+                entries))
          (active-path (expand-file-name (concat name ".org") (symbol-value directory-var)))
          (archive-path (prilepp/archive-path active-path)))
     (prilepp/horizon--move-file active-path archive-path)
@@ -107,7 +120,12 @@ mirrored active path."
   (let* ((entry (prilepp/horizon-type--prompt "Restore type: "))
          (slug (plist-get entry :slug))
          (directory-var (plist-get entry :directory-var))
-         (name (completing-read "Restore entry: " (prilepp/horizon-archived-names slug) nil t))
+         (archived (prilepp/horizon-archived-names slug))
+         (entries (seq-filter (lambda (e) (member (nth 1 e) archived))
+                              (prilepp/horizon-entries slug t)))
+         (name (prilepp/horizon-entry-name
+                (completing-read "Restore entry: " (mapcar #'car entries) nil t)
+                entries))
          (archive-path (expand-file-name
                          (concat name ".org")
                          (prilepp/archive-path (symbol-value directory-var))))
