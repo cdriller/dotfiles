@@ -53,11 +53,6 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   pgrep i3 || exec startx "$XDG_CONFIG_HOME/X11/.xinitrc"
 fi
 
-# Tmux
-if [ -z "$TMUX" ]; then
-  tmux new-session -As scratchpad
-fi
-
 # Atuin
 . "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh --disable-up-arrow)"
