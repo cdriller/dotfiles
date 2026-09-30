@@ -49,11 +49,29 @@
   :default-content "#+TODO: TODO(t) WAITING(w) | DONE(d)\n\n"
   :link-word nil)
 
+(defvar prilepp/tickler-file "~/notes/tickler.org"
+  "Path to the tickler file: a flat Org file of date-deferred reminders.")
+
+(defun prilepp/tickler-ensure-file ()
+  "Ensure `prilepp/tickler-file' exists, seeded with a #+TODO line.
+Return its expanded path."
+  (let ((file (expand-file-name prilepp/tickler-file)))
+    (unless (file-exists-p file)
+      (with-temp-buffer
+        (insert "#+TODO: TODO(t) | DONE(d)\n")
+        (write-file file)))
+    file))
+
 (setq org-agenda-custom-commands
       '(("d" "Deadlines (Actions)" agenda ""
          ((org-agenda-files (directory-files (expand-file-name prilepp/actions-directory) t "\\.org\\'"))
           (org-agenda-entry-types '(:deadline))
-          (org-agenda-span 'month)))))
+          (org-agenda-span 'month)))
+        ("t" "Tickler" agenda ""
+         ((org-agenda-files (list (prilepp/tickler-ensure-file)))
+          (org-agenda-entry-types '(:scheduled))
+          (org-agenda-span 'day)
+          (org-agenda-skip-scheduled-if-done t)))))
 
 (defun prilepp/agenda-deadlines ()
   "Show all deadlines set in `prilepp/actions-directory'."
@@ -63,6 +81,15 @@
 (global-set-key (kbd "C-c v d") #'prilepp/agenda-deadlines)
 (which-key-add-key-based-replacements
   "C-c v d" "deadlines")
+
+(defun prilepp/agenda-tickler ()
+  "Show tickler items in `prilepp/tickler-file' due today or earlier."
+  (interactive)
+  (org-agenda nil "t"))
+
+(global-set-key (kbd "C-c v t") #'prilepp/agenda-tickler)
+(which-key-add-key-based-replacements
+  "C-c v t" "tickler")
 
 (defun prilepp/action-move-to-context ()
   "Move the action (subtree) at point to another context file under

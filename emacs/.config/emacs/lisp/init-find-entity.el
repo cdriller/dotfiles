@@ -153,6 +153,11 @@ and `prilepp/read-entity-link'."
              :action ,(lambda (_n) (my/edit-someday-file))
              :new ,(lambda (_n) (my/edit-someday-file))
              :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "~/notes/someday.org") "Someday")))
+           `(:name "Tickler" :narrow ?t
+             :items ,(lambda () '("Tickler"))
+             :action ,(lambda (_n) (find-file (prilepp/tickler-ensure-file)))
+             :new ,(lambda (_n) (find-file (prilepp/tickler-ensure-file)))
+             :link ,(lambda (_n) (format "[[file:%s][%s]]" (prilepp/tickler-ensure-file) "Tickler")))
            `(:name "Heading" :narrow ?h
              :items ,(lambda () (mapcar #'car (prilepp/heading--candidates)))
              :action ,(lambda (n) (prilepp/heading--jump (cdr (assoc n (prilepp/heading--candidates)))))
