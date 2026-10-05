@@ -3,4 +3,4 @@ export SHELL_SESSIONS_DISABLE=1
 
 gpgconf --launch gpg-agent
 
-echo "loaded: .zprofile"
+echo "loaded $(date): .zprofile"

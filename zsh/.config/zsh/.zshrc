@@ -59,3 +59,5 @@ eval "$(atuin init zsh --disable-up-arrow)"
 source <(atuin gen-completions --shell zsh)
 
 export PATH="$HOME/.local/bin:$PATH"
+
+echo "loaded $(date): .zshrc"

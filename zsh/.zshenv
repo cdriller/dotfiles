@@ -20,4 +20,4 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export SSH_ASKPASS="$HOME/.local/bin/ssh-ask-pass.sh"
 export SSH_ASKPASS_REQUIRE=force
 
-echo "loaded: .zshenv"
+echo "loaded $(date): .zshenv"
