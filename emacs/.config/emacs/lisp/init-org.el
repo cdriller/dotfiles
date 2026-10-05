@@ -15,6 +15,7 @@
   (setq org-id-link-to-org-use-id t)
   (setq org-refile-targets
       '((my/org-horizon-files :maxlevel . 3)))
+  (setq org-agenda-files '("~/notes/someday.org" "~/notes/horizons/actions/"))
   )
 
 (use-package org-roam

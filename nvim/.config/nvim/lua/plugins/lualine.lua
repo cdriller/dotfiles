@@ -87,6 +87,9 @@ return {
             tabline = {
                 lualine_a = {
                     {
+                        "'nvim'",
+                    },
+                    {
                         "tabs",
                         mode = 1,
                         max_length = function() return vim.o.columns end,

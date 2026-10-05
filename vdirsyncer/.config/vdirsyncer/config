@@ -16,7 +16,7 @@ fileext = ".vcf"
 type = "carddav"
 url = "https://ew1.mooo.com:9443/remote.php/dav/"
 username = "cdriller"
-password.fetch = ["command", "pass", "show", "vdirsyncer"]
+password.fetch = ["command", "/opt/homebrew/bin/pass", "show", "vdirsyncer"]
 
 [pair calendars]
 a = "calendars_local"
@@ -32,4 +32,4 @@ fileext = ".ics"
 type = "caldav"
 url = "https://ew1.mooo.com:9443/remote.php/dav/"
 username = "cdriller"
-password.fetch = ["command", "pass", "show", "vdirsyncer"]
+password.fetch = ["command", "/opt/homebrew/bin/pass", "show", "vdirsyncer"]

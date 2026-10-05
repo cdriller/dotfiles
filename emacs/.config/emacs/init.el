@@ -16,6 +16,6 @@
 (require 'init-contacts)
 (require 'init-calendar)
 (require 'init-find-entity)
-(require 'init-dashboard)
+;; (require 'init-dashboard)
 
 ;;; init.el ends here
