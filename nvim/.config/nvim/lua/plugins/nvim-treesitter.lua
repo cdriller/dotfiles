@@ -1,8 +1,6 @@
 return {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    event = "BufReadPost",
-    config = function()
+    src = "https://github.com/nvim-treesitter/nvim-treesitter",
+    setup = function()
         local install = require("nvim-treesitter.install")
         install.install({ "python", "lua", "c", "bash", "markdown" })
         vim.api.nvim_create_autocmd("FileType", {

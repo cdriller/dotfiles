@@ -1,6 +1,6 @@
 return {
-    "mason-org/mason.nvim",
-    cmd = "Mason",
-    lazy = false,
-    config = true,
+    src = "https://github.com/mason-org/mason.nvim",
+    setup = function ()
+        require("mason").setup()
+    end,
 }

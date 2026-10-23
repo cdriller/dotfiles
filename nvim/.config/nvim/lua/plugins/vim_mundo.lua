@@ -1,6 +1,6 @@
 return {
-    "simnalamburt/vim-mundo",
-    keys = {
-        { "<leader>ut", ":MundoToggle<CR>", mode = "n", noremap = true, silent = true },
-    },
+    src = "https://github.com/simnalamburt/vim-mundo",
+    setup = function ()
+        vim.keymap.set("n", "<leader>ut", ":MundoToggle<CR>", { noremap = true, silent = true })
+    end,
 }

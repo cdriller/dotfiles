@@ -69,45 +69,73 @@ vim.opt.foldenable = false
 -- # Leader Key #
 -- ##############
 -- Make sure to setup `mapleader` and `maplocalleader` before
--- loading lazy.nvim so that mappings are correct.
+-- loading plugins so that mappings are correct.
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 -- Disable space and \ so they can be used as leader and localleader
 vim.keymap.set("n", "<space>", "<nop>", { noremap = true })
 vim.keymap.set("n", "\\", "<nop>", { noremap = true })
 
--- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out,                            "WarningMsg" },
-            { "\nPress any key to exit..." },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
+-- ###########
+-- # Plugins #
+-- ###########
+-- Managed with Neovim's built-in `vim.pack` package manager (no third-party
+-- plugin manager). Each file under `lua/plugins/` returns
+-- `{ src, version?, name?, setup? }`; order matters only for `gruvbox`, which
+-- must run its `setup()` (colorscheme + derived highlight group) before
+-- anything else, so it is listed first.
+--
+-- Manual build steps (vim.pack runs no build hooks automatically):
+--   - blink.cmp: run `cargo build --release` inside its plugin directory
+--     (under `vim.fn.stdpath("data") .. "/site/pack/core/opt/blink.cmp"`).
+--   - nvim-treesitter: run `:TSUpdate` after installing or updating it.
+local plugins = {
+    "gruvbox",
+    "blink-lib",
+    "luasnip",
+    "blink_cmp",
+    "nvim-web-devicons",
+    "todo-comments",
+    "fzf",
+    "gitsigns",
+    "harpoon",
+    "lualine",
+    "mason",
+    "nvim-treesitter-context",
+    "nvim-treesitter",
+    "plenary",
+    "render_markdown",
+    "tabular",
+    "vim_mundo",
+    "vim_tmux_navigator",
+    "vim-fugitive",
+    "vim-unimpaired",
+    "which-key",
+}
+
+local plugin_modules = {}
+local plugin_specs = {}
+for _, plugin_name in ipairs(plugins) do
+    local mod = require("plugins." .. plugin_name)
+    plugin_modules[#plugin_modules + 1] = mod
+    plugin_specs[#plugin_specs + 1] = {
+        src = mod.src,
+        version = mod.version,
+        name = mod.name,
+    }
+end
+
+-- `load = true`: vim.pack.add() defaults `load` to false while init.lua is
+-- still sourcing, which would leave every plugin's `plugin/`/`ftdetect`
+-- scripts unsourced (e.g. vim-fugitive's `:Git`, vim-mundo's `:MundoToggle`,
+-- vim-tmux-navigator's `:TmuxNavigate*`, vim-unimpaired's mappings).
+vim.pack.add(plugin_specs, { load = true })
+
+for _, mod in ipairs(plugin_modules) do
+    if mod.setup then
+        mod.setup()
     end
 end
-vim.opt.rtp:prepend(lazypath)
-
-
--- Setup lazy.nvim
-require("lazy").setup({
-    defaults = {
-        lazy = true,
-    },
-    spec = { { import = "plugins" } },
-    -- Configure any other settings here. See the documentation for more details.
-    -- colorscheme that will be used when installing plugins.
-    install = {
-        missing = true,
-        colorscheme = { "gruvbox" },
-    },
-    checker = { enabled = false },
-})
 
 require "lsp"
 

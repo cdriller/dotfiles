@@ -1,4 +1,1 @@
-return {
-    "tpope/vim-unimpaired",
-    event = "VeryLazy"
-}
+return { src = "https://github.com/tpope/vim-unimpaired" }

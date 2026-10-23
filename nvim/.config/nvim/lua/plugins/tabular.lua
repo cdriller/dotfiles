@@ -1,4 +1,1 @@
-return {
-    "godlygeek/tabular",
-    lazy = false
-}
+return { src = "https://github.com/godlygeek/tabular" }

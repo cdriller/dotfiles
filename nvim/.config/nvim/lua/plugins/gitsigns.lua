@@ -1,9 +1,10 @@
 local keys = require("keys")
 
 return {
-    "lewis6991/gitsigns.nvim",
-    event = "BufEnter",
-    opts = {
-        on_attach = keys.gitsigns,
-    },
+    src = "https://github.com/lewis6991/gitsigns.nvim",
+    setup = function ()
+        require("gitsigns").setup({
+            on_attach = keys.gitsigns,
+        })
+    end,
 }

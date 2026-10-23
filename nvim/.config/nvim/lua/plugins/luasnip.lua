@@ -1,7 +1,7 @@
 return {
-    "L3MON4D3/LuaSnip",
-    version = "v2.*",
-    config = function ()
+    src = "https://github.com/L3MON4D3/LuaSnip",
+    version = "v2.5.0",
+    setup = function ()
         local ls = require("luasnip")
         local s = ls.snippet
         local t = ls.text_node
@@ -25,7 +25,7 @@ return {
             s("docstr", fmt([[
             /**
              * @brief {1}
-             * 
+             *
              * {2}
              *
              * @param {3} {4}

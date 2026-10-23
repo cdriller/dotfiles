@@ -1,1 +1,1 @@
-return { "tpope/vim-fugitive", cmd = { "G", "Git" }, event = "VeryLazy" }
+return { src = "https://github.com/tpope/vim-fugitive" }

@@ -1,7 +1,6 @@
 return {
-    "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    opts = function ()
+    src = "https://github.com/nvim-lualine/lualine.nvim",
+    setup = function ()
         local lualine_theme = require("lualine.themes.gruvbox")
         local tabs_inactive_color = vim.deepcopy(lualine_theme.inactive.a)
         local winbar_color = { fg = "#928374", bg = "NONE", gui = "italic" }
@@ -35,7 +34,7 @@ return {
             return string.format("%d: %s", tab.tabnr, vim.fn.fnamemodify(vim.fn.getcwd(-1, tab.tabnr), ":~"))
         end
 
-        return {
+        local opts = {
             options = {
                 icons_enabled = true,
                 theme = lualine_theme,
@@ -112,5 +111,7 @@ return {
             },
             extensions = { "fzf", "mundo", "mason", "fugitive", "man" },
         }
+
+        require("lualine").setup(opts)
     end,
 }
