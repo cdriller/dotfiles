@@ -6,9 +6,9 @@ Defines the structured `C-c`-prefix keybindings in the Emacs config so that a si
 
 ### Requirement: Unified node picker
 
-The system SHALL expose a single `C-c n` binding that opens a completion picker aggregating every node type: Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine, Someday, Tickler, and Heading. Selecting a candidate with RET SHALL open/visit that node's location. Pressing `C-i` while a candidate is highlighted SHALL insert an org link to it at point in the buffer where `C-c n` was invoked, without opening it. Pressing `C-c` while a candidate is highlighted SHALL copy an org link to it to the clipboard/kill-ring, without opening it. The behavior for the node types that existed under the previous `C-c o` binding (Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine) SHALL be unchanged, except that the labels of the Action, Project, Area, Goal, Vision and Life candidates, and the descriptions of links inserted/copied for them, are the entry's file title rather than its filename (see the `emacs-horizon-titles` capability).
+The system SHALL expose a single `C-c n` binding that opens a completion picker aggregating every node type: Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine, Someday, and Heading. Selecting a candidate with RET SHALL open/visit that node's location. Pressing `C-i` while a candidate is highlighted SHALL insert an org link to it at point in the buffer where `C-c n` was invoked, without opening it. Pressing `C-c` while a candidate is highlighted SHALL copy an org link to it to the clipboard/kill-ring, without opening it. The behavior for the node types that existed under the previous `C-c o` binding (Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine) SHALL be unchanged, except that the labels of the Action, Project, Area, Goal, Vision, Life, and Agenda candidates, and the descriptions of links inserted/copied for them, are the entry's file title rather than its filename (see the `emacs-horizon-titles` capability).
 
-For the six node types that support archiving (Action, Project, Area, Goal, Vision, Life), the picker's candidates for that type SHALL also include that type's archived entries, in addition to its active entries. Within each such type's candidates, every archived entry SHALL be ordered after every active entry (lowest priority), so active entries are always seen and selected first. Selecting an archived candidate with RET SHALL open the archived file directly, without recreating an active file of the same name; `C-i`/`C-c` on an archived candidate SHALL insert/copy a link exactly as for an active entry of that type. Each archived candidate SHALL also be visually distinguishable from active candidates in the completion list (e.g. via an "(archiviert)" annotation), without altering the underlying entry (file) that is opened, or linked to, by selection, RET, `C-i`, or `C-c`.
+For the seven node types that support archiving (Action, Project, Area, Goal, Vision, Life, Agenda), the picker's candidates for that type SHALL also include that type's archived entries, in addition to its active entries. Within each such type's candidates, every archived entry SHALL be ordered after every active entry (lowest priority), so active entries are always seen and selected first. Selecting an archived candidate with RET SHALL open the archived file directly, without recreating an active file of the same name; `C-i`/`C-c` on an archived candidate SHALL insert/copy a link exactly as for an active entry of that type. Each archived candidate SHALL also be visually distinguishable from active candidates in the completion list (e.g. via an "(archiviert)" annotation), without altering the underlying entry (file) that is opened, or linked to, by selection, RET, `C-i`, or `C-c`.
 
 #### Scenario: Opening a node
 - **WHEN** the user presses `C-c n`, narrows/selects a Zettel candidate, and presses RET
@@ -31,15 +31,19 @@ For the six node types that support archiving (Action, Project, Area, Goal, Visi
 - **THEN** Emacs opens that project's file from `~/notes/archive/horizons/proj/`, and does not create a new file under `~/notes/horizons/proj/`
 
 #### Scenario: Archived candidates are visually marked
-- **WHEN** the user presses `C-c n` and narrows to a source (Action, Project, Area, Goal, Vision, or Life) that has at least one archived entry
+- **WHEN** the user presses `C-c n` and narrows to a source (Action, Project, Area, Goal, Vision, Life, or Agenda) that has at least one archived entry
 - **THEN** that entry's candidate is shown with a visible annotation (e.g. "(archiviert)") distinguishing it from active candidates, in addition to being ordered after all active entries
 
 #### Scenario: Horizon candidates are labelled by title
 - **WHEN** the user presses `C-c n`, narrows to the Project source, and a project file contains `#+title: Self-hosted Mail` while being named `Mail Server.org`
 - **THEN** the candidate is labelled `Self-hosted Mail`, RET opens `Mail Server.org`, and `C-i`/`C-c` produce a link to `Mail Server.org` described as `Self-hosted Mail`
 
+#### Scenario: Agenda entries are also archivable
+- **WHEN** the user presses `C-c n`, narrows to the Agenda source, and that agenda list has both active and archived agendas
+- **THEN** every active agenda candidate is listed before every archived agenda candidate, each archived candidate is annotated (e.g. "(archiviert)"), and selecting an archived candidate opens the archived file from `~/notes/archive/agendas/` directly
+
 #### Scenario: Non-archivable node types are unaffected
-- **WHEN** the user presses `C-c n` and narrows to the Zettel, Literature, Person, Routine, Someday, Tickler, Agenda, or Heading source
+- **WHEN** the user presses `C-c n` and narrows to the Zettel, Literature, Person, Routine, Someday, or Heading source
 - **THEN** the candidates shown are exactly the same as before this capability existed - no archived/low-priority grouping applies to these sources
 
 ### Requirement: Someday as a node
