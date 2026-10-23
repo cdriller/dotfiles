@@ -26,8 +26,8 @@
 
 ;;; Code:
 
-(require 'init-horizon-types)
-(require 'init-horizon-archive)
+(require 'init-gtd-list-types)
+(require 'init-gtd-list-archive)
 
 (defun prilepp/org-roam-node-by-title (title)
   "Return the org-roam node with TITLE, or nil."
@@ -81,13 +81,13 @@ the enclosing `prilepp/find-entity' call."
   (interactive)
   (prilepp/find-entity--act 'copy))
 
-(defun prilepp/entity-sources--horizon (name narrow slug)
-  "Return a `consult--multi' source NAME (narrow key NARROW) for horizon SLUG.
+(defun prilepp/entity-sources--gtd-list (name narrow slug)
+  "Return a `consult--multi' source NAME (narrow key NARROW) for GTD list SLUG.
 Candidates are entry labels (file titles); an unknown typed label is a
 new entry name."
-  (let* ((ensure-fn (plist-get (alist-get slug prilepp/horizon-types) :ensure-fn))
-         (entries (prilepp/horizon-entries slug t))
-         (archived (prilepp/horizon-archived-names slug))
+  (let* ((ensure-fn (plist-get (alist-get slug prilepp/gtd-list-types) :ensure-fn))
+         (entries (prilepp/gtd-list-entries slug t))
+         (archived (prilepp/gtd-list-archived-names slug))
          (resolve (lambda (label)
                     (or (assoc label entries) (list label label label))))
          (open (lambda (label)
@@ -108,17 +108,13 @@ new entry name."
   "Return the list of `consult--multi' sources used by `prilepp/find-entity'
 and `prilepp/read-entity-link'."
   (list
-           (prilepp/entity-sources--horizon "Action" ?0 'actions)
-           (prilepp/entity-sources--horizon "Project" ?1 'proj)
-           (prilepp/entity-sources--horizon "Area" ?2 'aor)
-           (prilepp/entity-sources--horizon "Goal" ?3 'goals)
-           (prilepp/entity-sources--horizon "Vision" ?4 'vision)
-           (prilepp/entity-sources--horizon "Life" ?5 'life)
-           `(:name "Agenda" :narrow ?a
-             :items ,#'prilepp/agendas--list-entries
-             :action ,(lambda (n) (find-file (prilepp/agendas-ensure-file n)))
-             :new ,(lambda (n) (find-file (prilepp/agendas-ensure-file n)))
-             :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/agendas-ensure-file n) n)))
+           (prilepp/entity-sources--gtd-list "Action" ?0 'actions)
+           (prilepp/entity-sources--gtd-list "Project" ?1 'proj)
+           (prilepp/entity-sources--gtd-list "Area" ?2 'aor)
+           (prilepp/entity-sources--gtd-list "Goal" ?3 'goals)
+           (prilepp/entity-sources--gtd-list "Vision" ?4 'vision)
+           (prilepp/entity-sources--gtd-list "Life" ?5 'life)
+           (prilepp/entity-sources--gtd-list "Agenda" ?a 'agendas)
            `(:name "Zettel" :narrow ?z :default t
              :items ,(lambda ()
                        (mapcar #'org-roam-node-title

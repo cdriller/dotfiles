@@ -1,9 +1,9 @@
-;;; init-horizon-types.el --- Shared macro for GTD horizon-type boilerplate -*- lexical-binding: t; -*-
+;;; init-gtd-list-types.el --- Shared macro for GTD list-type boilerplate -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; `prilepp/define-horizon-type' generates, from a compact per-type
+;; `prilepp/define-gtd-list-type' generates, from a compact per-type
 ;; declaration, the boilerplate that used to be hand-written once per
-;; GTD "horizon type" (Project, Area, Life, Goal, Vision in
+;; GTD list type (Project, Area, Life, Goal, Vision in
 ;; init-projects.el; Actions in init-files.el): a `*-directory' defvar,
 ;; a `*--list-*' completion helper, a `*-ensure-file' find-or-create
 ;; function, and a `*-find' command -- plus, when a link word is
@@ -12,7 +12,7 @@
 ;;
 ;; Every one of the six existing types implemented this same shape by
 ;; hand (~230 duplicated lines total). A planned follow-up change adds
-;; archive support to every horizon type, which needs the same fix
+;; archive support to every GTD list type, which needs the same fix
 ;; applied six times; expressing all six through one macro means that
 ;; fix (and any future one) is written once instead of six times. See
 ;; design.md in the "emacs-refactor-horizon-setup" change for the full
@@ -24,34 +24,34 @@
 ;; interned symbol that other files can keep referring to by name
 ;; exactly as before.
 ;;
-;; Each expansion also upserts an entry into `prilepp/horizon-types',
+;; Each expansion also upserts an entry into `prilepp/gtd-list-types',
 ;; an alist of slug -> metadata plist (`:slug', `:directory-var',
 ;; `:list-fn', `:ensure-fn', `:find-fn', `:link-word'). This lets
-;; generic code (e.g. archive/restore support) iterate "every horizon
+;; generic code (e.g. archive/restore support) iterate "every GTD list
 ;; type" without hardcoding one case per type. The upsert is done via
 ;; `setf'/`alist-get' rather than `push', so re-evaluating a
-;; `prilepp/define-horizon-type' call (e.g. with `C-M-x' during
+;; `prilepp/define-gtd-list-type' call (e.g. with `C-M-x' during
 ;; development) replaces its entry instead of duplicating it.
 
 ;;; Code:
 
 (require 'cl-lib)
 
-(defvar prilepp/horizon-types nil
-  "Alist of horizon-type metadata plists, keyed by slug, registered by
-`prilepp/define-horizon-type'.")
+(defvar prilepp/gtd-list-types nil
+  "Alist of GTD-list-type metadata plists, keyed by slug, registered by
+`prilepp/define-gtd-list-type'.")
 
-(defun prilepp/horizon-type--register (slug plist)
-  "Upsert PLIST as the registered metadata for horizon-type SLUG."
-  (setf (alist-get slug prilepp/horizon-types) plist))
+(defun prilepp/gtd-list-type--register (slug plist)
+  "Upsert PLIST as the registered metadata for GTD-list-type SLUG."
+  (setf (alist-get slug prilepp/gtd-list-types) plist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Entry titles: pickers show a file's `#+title:' instead of its filename
 
-(defvar prilepp/horizon--title-cache (make-hash-table :test #'equal)
-  "Map from absolute file name to (MTIME . TITLE) for `prilepp/horizon-file-title'.")
+(defvar prilepp/gtd-list--title-cache (make-hash-table :test #'equal)
+  "Map from absolute file name to (MTIME . TITLE) for `prilepp/gtd-list-file-title'.")
 
-(defun prilepp/horizon--read-title (file)
+(defun prilepp/gtd-list--read-title (file)
   "Return the `#+title:' value in the head of FILE, or nil.
 Only the first 4 KiB before the first org heading are considered."
   (with-temp-buffer
@@ -66,20 +66,20 @@ Only the first 4 KiB before the first org heading are considered."
         (let ((title (string-trim (match-string 1))))
           (unless (string-empty-p title) title))))))
 
-(defun prilepp/horizon-file-title (file)
+(defun prilepp/gtd-list-file-title (file)
   "Return the `#+title:' of FILE, or nil if it has none.
 Results are cached per file and revalidated against its modification time."
   (let* ((path (expand-file-name file))
          (mtime (file-attribute-modification-time (file-attributes path)))
-         (cached (gethash path prilepp/horizon--title-cache)))
+         (cached (gethash path prilepp/gtd-list--title-cache)))
     (when mtime
       (if (and cached (time-equal-p (car cached) mtime))
           (cdr cached)
-        (let ((title (prilepp/horizon--read-title path)))
-          (puthash path (cons mtime title) prilepp/horizon--title-cache)
+        (let ((title (prilepp/gtd-list--read-title path)))
+          (puthash path (cons mtime title) prilepp/gtd-list--title-cache)
           title)))))
 
-(defun prilepp/horizon--label-entries (pairs)
+(defun prilepp/gtd-list--label-entries (pairs)
   "Turn PAIRS, a list of (NAME . TITLE-OR-NIL), into (LABEL NAME TITLE) entries.
 TITLE falls back to NAME. LABEL is TITLE, with \" (NAME)\" appended when
 another entry would show the same label."
@@ -97,34 +97,34 @@ another entry would show the same label."
                 entry))
             entries)))
 
-(declare-function prilepp/horizon-archived-entries "init-horizon-archive" (slug))
+(declare-function prilepp/gtd-list-archived-entries "init-gtd-list-archive" (slug))
 
-(defun prilepp/horizon-entries (slug &optional include-archived)
-  "Return (LABEL NAME TITLE) entries for the horizon type SLUG.
+(defun prilepp/gtd-list-entries (slug &optional include-archived)
+  "Return (LABEL NAME TITLE) entries for the GTD list type SLUG.
 NAME is the filename without .org, TITLE the file's `#+title:' (or NAME),
 and LABEL the unique string pickers show. Active entries come first;
 with INCLUDE-ARCHIVED the archived ones follow."
-  (let* ((plist (alist-get slug prilepp/horizon-types))
+  (let* ((plist (alist-get slug prilepp/gtd-list-types))
          (root (expand-file-name (symbol-value (plist-get plist :directory-var)))))
-    (prilepp/horizon--label-entries
+    (prilepp/gtd-list--label-entries
      (append
       (mapcar (lambda (name)
-                (cons name (prilepp/horizon-file-title
+                (cons name (prilepp/gtd-list-file-title
                             (expand-file-name (concat name ".org") root))))
               (funcall (plist-get plist :list-fn)))
       (when include-archived
-        (prilepp/horizon-archived-entries slug))))))
+        (prilepp/gtd-list-archived-entries slug))))))
 
-(defun prilepp/horizon-entry-name (label entries)
+(defun prilepp/gtd-list-entry-name (label entries)
   "Return the NAME of the entry in ENTRIES labelled LABEL.
 A LABEL that matches no entry is a name the user typed, and is its own NAME."
   (or (nth 1 (assoc label entries)) label))
 
-(cl-defmacro prilepp/define-horizon-type
+(cl-defmacro prilepp/define-gtd-list-type
     (slug &key directory list-fn find-fn find-prompt ensure-fn
           default-content link-word link-follow-fn link-complete-fn
           insert-fn insert-prompt)
-  "Define the standard horizon-type boilerplate for SLUG.
+  "Define the standard GTD-list-type boilerplate for SLUG.
 
 DIRECTORY is the directory (a string) holding one org file per entry;
 it becomes the value of a generated `prilepp/SLUG-directory' defvar.
@@ -143,7 +143,7 @@ LINK-FOLLOW-FN and LINK-COMPLETE-FN as its :follow/:complete handlers,
 and defines INSERT-FN as an interactive command that inserts a
 \"[[LINK-WORD:NAME][NAME]]\" link at point, prompting with
 INSERT-PROMPT. Entries are offered by their file's `#+title:' (see
-`prilepp/horizon-entries'); the link target stays the filename and the
+`prilepp/gtd-list-entries'); the link target stays the filename and the
 description is the title. When LINK-WORD is nil, none of link-related
 forms are generated.
 
@@ -154,7 +154,7 @@ DEFAULT-CONTENT."
        (defvar ,directory-var ,directory
          ,(format "Directory containing one org file per %s entry." slug))
 
-       (prilepp/horizon-type--register
+       (prilepp/gtd-list-type--register
         ',slug
         (list :slug ',slug
               :directory-var ',directory-var
@@ -189,9 +189,9 @@ DEFAULT-CONTENT."
          ,(format "Select an entry under `%s' and open it,
 creating a new file if it doesn't exist yet." directory-var)
          (interactive)
-         (let* ((entries (prilepp/horizon-entries ',slug))
+         (let* ((entries (prilepp/gtd-list-entries ',slug))
                 (label (completing-read ,find-prompt (mapcar #'car entries))))
-           (find-file (,ensure-fn (prilepp/horizon-entry-name label entries)))))
+           (find-file (,ensure-fn (prilepp/gtd-list-entry-name label entries)))))
 
        ,@(when link-word
            `((defun ,link-follow-fn (name &optional _)
@@ -200,9 +200,9 @@ creating a new file if it doesn't exist yet." directory-var)
 
              (defun ,link-complete-fn (&optional _)
                ,(format "Interactively select an entry for `org-insert-link' (C-c C-l)." )
-               (let* ((entries (prilepp/horizon-entries ',slug))
+               (let* ((entries (prilepp/gtd-list-entries ',slug))
                       (label (completing-read ,insert-prompt (mapcar #'car entries))))
-                 (concat ,(concat link-word ":") (prilepp/horizon-entry-name label entries))))
+                 (concat ,(concat link-word ":") (prilepp/gtd-list-entry-name label entries))))
 
              (with-eval-after-load 'org
                (org-link-set-parameters ,link-word
@@ -213,7 +213,7 @@ creating a new file if it doesn't exist yet." directory-var)
                ,(format "Select an entry and insert `[[%s:NAME][TITLE]]' at point,
 creating the entry if it doesn't exist yet." link-word)
                (interactive)
-               (let* ((entries (prilepp/horizon-entries ',slug))
+               (let* ((entries (prilepp/gtd-list-entries ',slug))
                       (label (completing-read ,insert-prompt (mapcar #'car entries)))
                       (entry (assoc label entries))
                       (name (or (nth 1 entry) label))
@@ -221,5 +221,5 @@ creating the entry if it doesn't exist yet." link-word)
                  (,ensure-fn name)
                  (insert (format ,(concat "[[" link-word ":%s][%s]]") name title)))))))))
 
-(provide 'init-horizon-types)
-;;; init-horizon-types.el ends here
+(provide 'init-gtd-list-types)
+;;; init-gtd-list-types.el ends here

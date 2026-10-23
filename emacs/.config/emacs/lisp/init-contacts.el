@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+(require 'init-utils)
+
 (use-package vdirel
   :ensure t
   :custom
@@ -14,13 +16,6 @@
 
 (defvar prilepp/persons-directory "~/persons/"
   "Directory where person notes are stored")
-
-(defun prilepp/slugify (title)
-  "Return a filename-safe, lowercase, dash-separated slug for TITLE."
-  (let* ((s (downcase title))
-         (s (replace-regexp-in-string "[^[:alnum:]]+" "-" s))
-         (s (replace-regexp-in-string "\\`-+\\|-+\\'" "" s)))
-    s))
 
 (defun prilepp/vcf-field (file field)
   "Return the value of FIELD (e.g. \"FN\", \"EMAIL\") from vcf FILE, or nil."
