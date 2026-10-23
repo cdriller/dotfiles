@@ -6,7 +6,7 @@ Defines the structured `C-c`-prefix keybindings in the Emacs config so that a si
 
 ### Requirement: Unified node picker
 
-The system SHALL expose a single `C-c n` binding that opens a completion picker aggregating every node type: Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine, Someday, and Heading. Selecting a candidate with RET SHALL open/visit that node's location. Pressing `C-i` while a candidate is highlighted SHALL insert an org link to it at point in the buffer where `C-c n` was invoked, without opening it. Pressing `C-c` while a candidate is highlighted SHALL copy an org link to it to the clipboard/kill-ring, without opening it. The behavior for the node types that existed under the previous `C-c o` binding (Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine) SHALL be unchanged, except that the labels of the Action, Project, Area, Goal, Vision and Life candidates, and the descriptions of links inserted/copied for them, are the entry's file title rather than its filename (see the `emacs-horizon-titles` capability).
+The system SHALL expose a single `C-c n` binding that opens a completion picker aggregating every node type: Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine, Someday, Tickler, and Heading. Selecting a candidate with RET SHALL open/visit that node's location. Pressing `C-i` while a candidate is highlighted SHALL insert an org link to it at point in the buffer where `C-c n` was invoked, without opening it. Pressing `C-c` while a candidate is highlighted SHALL copy an org link to it to the clipboard/kill-ring, without opening it. The behavior for the node types that existed under the previous `C-c o` binding (Action, Project, Area, Goal, Vision, Life, Agenda, Zettel, Literature, Person, Routine) SHALL be unchanged, except that the labels of the Action, Project, Area, Goal, Vision and Life candidates, and the descriptions of links inserted/copied for them, are the entry's file title rather than its filename (see the `emacs-horizon-titles` capability).
 
 For the six node types that support archiving (Action, Project, Area, Goal, Vision, Life), the picker's candidates for that type SHALL also include that type's archived entries, in addition to its active entries. Within each such type's candidates, every archived entry SHALL be ordered after every active entry (lowest priority), so active entries are always seen and selected first. Selecting an archived candidate with RET SHALL open the archived file directly, without recreating an active file of the same name; `C-i`/`C-c` on an archived candidate SHALL insert/copy a link exactly as for an active entry of that type. Each archived candidate SHALL also be visually distinguishable from active candidates in the completion list (e.g. via an "(archiviert)" annotation), without altering the underlying entry (file) that is opened, or linked to, by selection, RET, `C-i`, or `C-c`.
 
@@ -39,7 +39,7 @@ For the six node types that support archiving (Action, Project, Area, Goal, Visi
 - **THEN** the candidate is labelled `Self-hosted Mail`, RET opens `Mail Server.org`, and `C-i`/`C-c` produce a link to `Mail Server.org` described as `Self-hosted Mail`
 
 #### Scenario: Non-archivable node types are unaffected
-- **WHEN** the user presses `C-c n` and narrows to the Zettel, Literature, Person, Routine, Someday, Agenda, or Heading source
+- **WHEN** the user presses `C-c n` and narrows to the Zettel, Literature, Person, Routine, Someday, Tickler, Agenda, or Heading source
 - **THEN** the candidates shown are exactly the same as before this capability existed - no archived/low-priority grouping applies to these sources
 
 ### Requirement: Someday as a node
@@ -80,8 +80,12 @@ The system SHALL NOT bind `C-c i` or any of its former leaves (`C-c i z`, `C-c i
 
 ### Requirement: View prefix group remains the home for aggregation views
 
-The system SHALL continue to expose the existing `C-c v` prefix group ("view") with its current leaf bindings (backlinks, roam-ui, calendar, deadlines) unchanged, and this group SHALL remain the designated location for future cross-location aggregation views (e.g. a future "waiting for" view) added in later changes.
+The system SHALL continue to expose the existing `C-c v` prefix group ("view") with its leaf bindings (backlinks, roam-ui, calendar, deadlines, tickler), and this group SHALL remain the designated location for future cross-location aggregation views (e.g. a future "waiting for" view) added in later changes.
 
 #### Scenario: Existing view bindings unaffected
 - **WHEN** the user presses `C-c v d`
 - **THEN** Emacs invokes the deadlines agenda view exactly as before this change
+
+#### Scenario: New tickler view binding
+- **WHEN** the user presses `C-c v t`
+- **THEN** Emacs invokes the tickler agenda view, showing tickler items due today or earlier
