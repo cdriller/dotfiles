@@ -14,7 +14,10 @@
   :init
   (setq org-id-link-to-org-use-id t)
   (setq org-refile-targets
-      '((my/org-horizon-files :maxlevel . 3)))
+      '((my/org-horizon-files :maxlevel . 3)
+        ("~/notes/someday.org" :maxlevel . 1)))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
   (setq org-agenda-files '("~/notes/someday.org" "~/notes/horizons/actions/"))
   )
 
