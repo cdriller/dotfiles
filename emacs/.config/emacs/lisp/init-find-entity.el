@@ -23,6 +23,13 @@
 ;; helpers `consult--multi' itself uses), then `throw' out of the
 ;; `consult--multi' call before its normal :action/:new post-processing
 ;; runs, so only the insert/copy happens — never also an open.
+;;
+;; Archived GTD entries are hidden by default; `M-a' shows/hides them.
+;; `consult--multi' builds each source's candidate list once, up front,
+;; so there's no live refresh on a keypress — `M-a' instead throws the
+;; current input out of the `consult--multi' call (same throw mechanism
+;; as insert/copy) and `prilepp/find-entity' relaunches itself with that
+;; input preselected and the archived-visibility flag flipped.
 
 ;;; Code:
 
@@ -81,12 +88,13 @@ the enclosing `prilepp/find-entity' call."
   (interactive)
   (prilepp/find-entity--act 'copy))
 
-(defun prilepp/entity-sources--gtd-list (name narrow slug)
+(defun prilepp/entity-sources--gtd-list (name narrow slug &optional show-archived)
   "Return a `consult--multi' source NAME (narrow key NARROW) for GTD list SLUG.
 Candidates are entry labels (file titles); an unknown typed label is a
-new entry name."
+new entry name. Archived entries are only included when SHOW-ARCHIVED
+is non-nil."
   (let* ((ensure-fn (plist-get (alist-get slug prilepp/gtd-list-types) :ensure-fn))
-         (entries (prilepp/gtd-list-entries slug t))
+         (entries (prilepp/gtd-list-entries slug show-archived))
          (archived (prilepp/gtd-list-archived-names slug))
          (resolve (lambda (label)
                     (or (assoc label entries) (list label label label))))
@@ -104,17 +112,18 @@ new entry name."
                  (format "[[file:%s][%s]]"
                          (funcall ensure-fn (nth 1 entry)) (nth 2 entry)))))))
 
-(defun prilepp/entity-sources ()
+(defun prilepp/entity-sources (&optional show-archived)
   "Return the list of `consult--multi' sources used by `prilepp/find-entity'
-and `prilepp/read-entity-link'."
+and `prilepp/read-entity-link'. Archived GTD-list entries are only
+included when SHOW-ARCHIVED is non-nil."
   (list
-           (prilepp/entity-sources--gtd-list "Action" ?0 'actions)
-           (prilepp/entity-sources--gtd-list "Project" ?1 'proj)
-           (prilepp/entity-sources--gtd-list "Area" ?2 'aor)
-           (prilepp/entity-sources--gtd-list "Goal" ?3 'goals)
-           (prilepp/entity-sources--gtd-list "Vision" ?4 'vision)
-           (prilepp/entity-sources--gtd-list "Life" ?5 'life)
-           (prilepp/entity-sources--gtd-list "Agenda" ?a 'agendas)
+           (prilepp/entity-sources--gtd-list "Action" ?0 'actions show-archived)
+           (prilepp/entity-sources--gtd-list "Project" ?1 'proj show-archived)
+           (prilepp/entity-sources--gtd-list "Area" ?2 'aor show-archived)
+           (prilepp/entity-sources--gtd-list "Goal" ?3 'goals show-archived)
+           (prilepp/entity-sources--gtd-list "Vision" ?4 'vision show-archived)
+           (prilepp/entity-sources--gtd-list "Life" ?5 'life show-archived)
+           (prilepp/entity-sources--gtd-list "Agenda" ?a 'agendas show-archived)
            `(:name "Zettel" :narrow ?z :default t
              :items ,(lambda ()
                        (mapcar #'org-roam-node-title
@@ -159,25 +168,36 @@ and `prilepp/read-entity-link'."
              :action ,(lambda (n) (prilepp/heading--jump (cdr (assoc n (prilepp/heading--candidates)))))
              :link ,(lambda (n) (prilepp/heading--link (cdr (assoc n (prilepp/heading--candidates))))))))
 
-(defun prilepp/find-entity ()
+(defun prilepp/find-entity--toggle-archived ()
+  "Throw the current minibuffer input out of the enclosing `prilepp/find-entity'
+call, to relaunch it with archived GTD entries shown/hidden."
+  (interactive)
+  (throw 'prilepp-find-entity (list 'toggle-archived (minibuffer-contents))))
+
+(defun prilepp/find-entity (&optional initial show-archived)
   "Search or create across all named entities.
 RET opens/jumps to the selection. `C-i' inserts a link to it at point
-instead; `C-c' copies that link. See the Commentary above for details."
+instead; `C-c' copies that link. Archived GTD entries (actions,
+projects, areas, goals, vision, life, agendas) are hidden by default;
+`M-a' toggles showing them. See the Commentary above for details."
   (interactive)
-  (let* ((sources (prilepp/entity-sources))
+  (let* ((sources (prilepp/entity-sources show-archived))
          (prilepp/find-entity--sources (vconcat sources))
          (keymap (let ((m (make-sparse-keymap)))
                    (define-key m (kbd "C-i") #'prilepp/find-entity-insert)
                    (define-key m (kbd "C-c") #'prilepp/find-entity-copy)
+                   (define-key m (kbd "M-a") #'prilepp/find-entity--toggle-archived)
                    m))
          (result (catch 'prilepp-find-entity
-                   (list 'normal (consult--multi sources :keymap keymap)))))
+                   (list 'normal (consult--multi sources :keymap keymap :initial initial)))))
     (pcase result
       (`(insert ,name ,src) (insert (funcall (plist-get src :link) name)))
       (`(copy ,name ,src)
        (let ((link (funcall (plist-get src :link) name)))
          (kill-new link)
-         (message "Kopiert: %s" link))))))
+         (message "Kopiert: %s" link)))
+      (`(toggle-archived ,input)
+       (prilepp/find-entity input (not show-archived))))))
 
 (global-set-key (kbd "C-c n") #'prilepp/find-entity)
 (which-key-add-key-based-replacements
