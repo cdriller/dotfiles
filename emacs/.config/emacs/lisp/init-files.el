@@ -18,6 +18,11 @@
   (interactive)
   (find-file "~/notes/someday.org"))
 
+(defun my/edit-waiting-for-file ()
+  "Open waiting-for file."
+  (interactive)
+  (find-file "~/notes/waiting-for.org"))
+
 (defvar prilepp/journal-directory "~/notes/journal/"
   "Directory containing one org file per day.")
 
