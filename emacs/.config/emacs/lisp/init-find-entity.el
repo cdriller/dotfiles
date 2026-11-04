@@ -24,6 +24,17 @@
 ;; `consult--multi' call before its normal :action/:new post-processing
 ;; runs, so only the insert/copy happens — never also an open.
 ;;
+;; Each source's group heading is prefixed "L " or "E ": "L" (List) for
+;; sources holding a running list of items a user keeps adding to
+;; (every GTD list type, plus Someday/Tickler/Waiting); "E" (Entity)
+;; for sources that pick one atomic, named thing (Zettel, Literature,
+;; Person, Routine, Heading). This is cosmetic only — plain text
+;; prepended to each source's :name — since `consult--multi' routes
+;; its per-source :annotate return value through `consult--annotate-align'
+;; (string-only, right-aligned), so a left-hand prefix on individual
+;; candidates isn't available; the group heading is the only place
+;; this marker can go.
+;;
 ;; Archived GTD entries are hidden by default; `M-a' shows/hides them.
 ;; `consult--multi' builds each source's candidate list once, up front,
 ;; so there's no live refresh on a keypress — `M-a' instead throws the
@@ -92,7 +103,9 @@ the enclosing `prilepp/find-entity' call."
   "Return a `consult--multi' source NAME (narrow key NARROW) for GTD list SLUG.
 Candidates are entry labels (file titles); an unknown typed label is a
 new entry name. Archived entries are only included when SHOW-ARCHIVED
-is non-nil."
+is non-nil. The group heading is prefixed \"L \" (List): every GTD list
+type holds a running list of items (actions, next steps, ...) rather
+than a single atomic entity. See `prilepp/entity-sources' Commentary."
   (let* ((ensure-fn (plist-get (alist-get slug prilepp/gtd-list-types) :ensure-fn))
          (entries (prilepp/gtd-list-entries slug show-archived))
          (archived (prilepp/gtd-list-archived-names slug))
@@ -100,7 +113,7 @@ is non-nil."
                     (or (assoc label entries) (list label label label))))
          (open (lambda (label)
                  (find-file (funcall ensure-fn (nth 1 (funcall resolve label)))))))
-    `(:name ,name :narrow ,narrow
+    `(:name ,(concat "L " name) :narrow ,narrow
       :items ,(mapcar #'car entries)
       :annotate ,(lambda (label)
                    (when (member (nth 1 (funcall resolve label)) archived)
@@ -125,7 +138,7 @@ included when SHOW-ARCHIVED is non-nil."
            (prilepp/entity-sources--gtd-list "Life" ?5 'life show-archived)
            (prilepp/entity-sources--gtd-list "Agenda" ?a 'agendas show-archived)
            (prilepp/entity-sources--gtd-list "Reference" ?f 'reference show-archived)
-           `(:name "Zettel" :narrow ?z :default t
+           `(:name "E Zettel" :narrow ?z :default t
              :items ,(lambda ()
                        (mapcar #'org-roam-node-title
                                (seq-remove #'org-roam-node-refs (org-roam-node-list))))
@@ -133,19 +146,19 @@ included when SHOW-ARCHIVED is non-nil."
              :new ,(lambda (n) (org-roam-capture- :node (org-roam-node-create :title n)))
              :link ,(lambda (n) (format "[[id:%s][%s]]"
                                         (org-roam-node-id (prilepp/org-roam-node-by-title n)) n)))
-           `(:name "Literature" :narrow ?l
+           `(:name "E Literature" :narrow ?l
              :items ,(lambda ()
                        (mapcar #'org-roam-node-title
                                (seq-filter #'org-roam-node-refs (org-roam-node-list))))
              :action ,(lambda (n) (org-roam-node-visit (prilepp/org-roam-node-by-title n)))
              :link ,(lambda (n) (format "[[id:%s][%s]]"
                                         (org-roam-node-id (prilepp/org-roam-node-by-title n)) n)))
-           `(:name "Person" :narrow ?p
+           `(:name "E Person" :narrow ?p
              :items ,(lambda () (mapcar #'car (prilepp/vcf-candidates)))
              :action ,#'prilepp/new-person-note-for
              :new ,#'prilepp/new-person-note-for
              :link ,(lambda (n) (format "[[file:%s][%s]]" (prilepp/person-ensure-file n) n)))
-           `(:name "Routine" :narrow ?r
+           `(:name "E Routine" :narrow ?r
              :items ,(lambda () (mapcar #'car (prilepp/routine--candidates)))
              :action ,(lambda (n) (prilepp/routine-jump (cdr (assoc n (prilepp/routine--candidates)))))
              :new ,#'prilepp/routine-insert-new
@@ -154,22 +167,22 @@ included when SHOW-ARCHIVED is non-nil."
                              (id (with-current-buffer (marker-buffer marker)
                                    (save-excursion (goto-char marker) (org-id-get-create)))))
                         (format "[[id:%s][%s]]" id n))))
-           `(:name "Someday" :narrow ?s
+           `(:name "L Someday" :narrow ?s
              :items ,(lambda () '("Someday"))
              :action ,(lambda (_n) (my/edit-someday-file))
              :new ,(lambda (_n) (my/edit-someday-file))
              :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "~/notes/someday.org") "Someday")))
-           `(:name "Waiting" :narrow ?w
+           `(:name "L Waiting" :narrow ?w
              :items ,(lambda () '("Waiting"))
              :action ,(lambda (_n) (my/edit-waiting-for-file))
              :new ,(lambda (_n) (my/edit-waiting-for-file))
              :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "~/notes/waiting-for.org") "Waiting")))
-           `(:name "Tickler" :narrow ?t
+           `(:name "L Tickler" :narrow ?t
              :items ,(lambda () '("Tickler"))
              :action ,(lambda (_n) (find-file (prilepp/tickler-ensure-file)))
              :new ,(lambda (_n) (find-file (prilepp/tickler-ensure-file)))
              :link ,(lambda (_n) (format "[[file:%s][%s]]" (prilepp/tickler-ensure-file) "Tickler")))
-           `(:name "Heading" :narrow ?h
+           `(:name "E Heading" :narrow ?h
              :items ,(lambda () (mapcar #'car (prilepp/heading--candidates)))
              :action ,(lambda (n) (prilepp/heading--jump (cdr (assoc n (prilepp/heading--candidates)))))
              :link ,(lambda (n) (prilepp/heading--link (cdr (assoc n (prilepp/heading--candidates))))))))
