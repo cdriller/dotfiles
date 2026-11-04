@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;; `prilepp/find-entity' (C-c n) replaces the old collection of per-entity
 ;; top-level shortcuts (actions/projects/areas/goals/vision/life/zettel/
-;; literature/person/agenda/routine/someday/heading) with one `consult--multi'
+;; literature/person/agenda/routine/someday/reference/heading) with one `consult--multi'
 ;; prompt: each entity type is its own source with a group heading (shown
 ;; in the completion list) and a narrow key. Selecting an existing name
 ;; opens/jumps to it; typing a name that doesn't exist yet creates it —
@@ -124,6 +124,7 @@ included when SHOW-ARCHIVED is non-nil."
            (prilepp/entity-sources--gtd-list "Vision" ?4 'vision show-archived)
            (prilepp/entity-sources--gtd-list "Life" ?5 'life show-archived)
            (prilepp/entity-sources--gtd-list "Agenda" ?a 'agendas show-archived)
+           (prilepp/entity-sources--gtd-list "Reference" ?f 'reference show-archived)
            `(:name "Zettel" :narrow ?z :default t
              :items ,(lambda ()
                        (mapcar #'org-roam-node-title
@@ -178,8 +179,9 @@ call, to relaunch it with archived GTD entries shown/hidden."
   "Search or create across all named entities.
 RET opens/jumps to the selection. `C-i' inserts a link to it at point
 instead; `C-c' copies that link. Archived GTD entries (actions,
-projects, areas, goals, vision, life, agendas) are hidden by default;
-`M-a' toggles showing them. See the Commentary above for details."
+projects, areas, goals, vision, life, agendas, reference) are hidden
+by default; `M-a' toggles showing them. See the Commentary above for
+details."
   (interactive)
   (let* ((sources (prilepp/entity-sources show-archived))
          (prilepp/find-entity--sources (vconcat sources))

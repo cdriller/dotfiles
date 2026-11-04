@@ -1,8 +1,8 @@
-;;; init-gtd-lists.el --- All GTD list-type declarations: Action, Project, Area, Goal, Vision, Life, Agenda -*- lexical-binding: t; -*-
+;;; init-gtd-lists.el --- All GTD list-type declarations: Action, Project, Area, Goal, Vision, Life, Agenda, Reference -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; All seven GTD list-type declarations: Action, Project, Area, Goal,
-;; Vision, Life, Agenda. Each is defined via
+;; All eight GTD list-type declarations: Action, Project, Area, Goal,
+;; Vision, Life, Agenda, Reference. Each is defined via
 ;; `prilepp/define-gtd-list-type' (see init-gtd-list-types.el) instead
 ;; of by hand. Also holds the Actions-specific deadlines agenda view
 ;; and move-to-context command, since they're coupled to the Actions
@@ -135,6 +135,15 @@
   :find-fn prilepp/agendas-find
   :find-prompt "Agenda: "
   :ensure-fn prilepp/agendas-ensure-file
+  :default-content nil
+  :link-word nil)
+
+(prilepp/define-gtd-list-type reference
+  :directory "~/notes/reference/"
+  :list-fn prilepp/reference--list-entries
+  :find-fn prilepp/reference-find
+  :find-prompt "Reference: "
+  :ensure-fn prilepp/reference-ensure-file
   :default-content nil
   :link-word nil)
 
