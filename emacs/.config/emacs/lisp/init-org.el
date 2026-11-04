@@ -17,6 +17,7 @@
       '((my/org-notes-files :maxlevel . 3)))
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
+  (setq org-use-speed-commands t)
   (setq org-agenda-files '("~/notes/someday.org" "~/notes/horizons/actions/"))
   )
 
