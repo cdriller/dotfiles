@@ -17,11 +17,12 @@
 ;; do not truncate lines
 (global-visual-line-mode 1)
 
-;; Auto-save the actual file (not just a #backup#) for anything under ~/notes
+;; Auto-save the actual file (not just a #backup#) for anything under
+;; `prilepp/notes-directory'
 (setq auto-save-visited-predicate
       (lambda ()
         (and buffer-file-name
-             (file-in-directory-p buffer-file-name (expand-file-name "~/notes/")))))
+             (file-in-directory-p buffer-file-name prilepp/notes-directory))))
 (auto-save-visited-mode 1)
 
 (use-package emacs

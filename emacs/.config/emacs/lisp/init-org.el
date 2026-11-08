@@ -6,8 +6,8 @@
 ;;; Code:
 
 (defun my/org-notes-files ()
-  "Return all .org files under ~/notes/."
-  (directory-files-recursively "~/notes/" "\\.org\\'"))
+  "Return all .org files under `prilepp/notes-directory'."
+  (directory-files-recursively prilepp/notes-directory "\\.org\\'"))
 
 (use-package org
   :ensure nil
@@ -18,13 +18,14 @@
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
   (setq org-use-speed-commands t)
-  (setq org-agenda-files '("~/notes/someday.org" "~/notes/horizons/actions/"))
+  (setq org-agenda-files (list (expand-file-name "someday.org" prilepp/notes-directory)
+                                (expand-file-name "horizons/actions/" prilepp/notes-directory)))
   )
 
 (use-package org-roam
   :demand t
   :custom
-  (org-roam-directory (expand-file-name "notes/slipbox" (getenv "HOME")))
+  (org-roam-directory (expand-file-name "slipbox" prilepp/notes-directory))
   :bind
   (("C-c v b" . org-roam-buffer-toggle))
   :init
@@ -58,7 +59,7 @@
   ;; Ordner, in dem du deine annotierten PDFs ablegst:
   (citar-library-paths '("~/media/books/"))
   ;; Notizen liegen im org-roam-Verzeichnis:
-  (citar-notes-paths (list (expand-file-name "notes/slipbox" (getenv "HOME")))))
+  (citar-notes-paths (list (expand-file-name "slipbox" prilepp/notes-directory))))
 
 (use-package citar-org-roam
   :after (citar org-roam)

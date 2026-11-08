@@ -3,7 +3,8 @@
 ;;; Commentary:
 ;; Generic archive/restore support for every GTD list type registered
 ;; in `prilepp/gtd-list-types' (see init-gtd-list-types.el): a
-;; path-mirroring rule between ~/notes/... and ~/notes/archive/..., the
+;; path-mirroring rule between `prilepp/notes-directory' and
+;; `prilepp/archive-root', the
 ;; interactive `prilepp/archive-entry'/`prilepp/restore-entry' commands,
 ;; a fix so that following a link to an archived entry opens the
 ;; archived file instead of silently recreating an empty active one,
@@ -21,20 +22,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Path mirroring
 
-(defvar prilepp/notes-root (expand-file-name "~/notes/")
-  "Root directory of all notes.")
-
-(defvar prilepp/archive-root (expand-file-name "~/notes/archive/")
-  "Root directory mirroring `prilepp/notes-root' for archived entries.")
+(defvar prilepp/archive-root (expand-file-name "archive/" prilepp/notes-directory)
+  "Root directory mirroring `prilepp/notes-directory' for archived entries.")
 
 (defun prilepp/archive-path (path)
-  "Return the archive-mirrored path for the active PATH under `prilepp/notes-root'."
+  "Return the archive-mirrored path for the active PATH under `prilepp/notes-directory'."
   (concat prilepp/archive-root
-          (string-remove-prefix prilepp/notes-root (expand-file-name path))))
+          (string-remove-prefix prilepp/notes-directory (expand-file-name path))))
 
 (defun prilepp/active-path (path)
   "Return the active path for the archive-mirrored PATH under `prilepp/archive-root'."
-  (concat prilepp/notes-root
+  (concat prilepp/notes-directory
           (string-remove-prefix prilepp/archive-root (expand-file-name path))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;

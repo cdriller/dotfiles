@@ -22,9 +22,9 @@
          ("M-y" . consult-yank-pop)))
 
 (defun prilepp/notes-grep ()
-  "Grep across all notes under ~/notes."
+  "Grep across all notes under `prilepp/notes-directory'."
   (interactive)
-  (consult-ripgrep "~/notes"))
+  (consult-ripgrep prilepp/notes-directory))
 
 (global-set-key (kbd "C-c g") #'prilepp/notes-grep)
 (which-key-add-key-based-replacements

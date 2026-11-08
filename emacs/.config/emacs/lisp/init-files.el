@@ -16,14 +16,14 @@
 (defun my/edit-someday-file ()
   "Open someday file."
   (interactive)
-  (find-file "~/notes/someday.org"))
+  (find-file (expand-file-name "someday.org" prilepp/notes-directory)))
 
 (defun my/edit-waiting-for-file ()
   "Open waiting-for file."
   (interactive)
-  (find-file "~/notes/waiting-for.org"))
+  (find-file (expand-file-name "waiting-for.org" prilepp/notes-directory)))
 
-(defvar prilepp/journal-directory "~/notes/journal/"
+(defvar prilepp/journal-directory (expand-file-name "journal/" prilepp/notes-directory)
   "Directory containing one org file per day.")
 
 (defun prilepp/journal-today ()
@@ -45,7 +45,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Tickler
 
-(defvar prilepp/tickler-file "~/notes/tickler.org"
+(defvar prilepp/tickler-file (expand-file-name "tickler.org" prilepp/notes-directory)
   "Path to the tickler file: a flat Org file of date-deferred reminders.")
 
 (defun prilepp/tickler-ensure-file ()

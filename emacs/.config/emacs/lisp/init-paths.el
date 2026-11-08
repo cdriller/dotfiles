@@ -14,6 +14,11 @@
 (defvar my/xdg-data   (getenv "XDG_DATA_HOME"))
 (defvar my/xdg-state  (getenv "XDG_STATE_HOME"))
 
+;; Notes root — referenced from every other module instead of hardcoding
+;; "~/notes/" again.
+(defvar prilepp/notes-directory (expand-file-name "~/Nextcloud-Mac/notes/")
+  "Root directory of all notes.")
+
 ;; Package storage → XDG_DATA_HOME
 (setq package-user-dir
       (expand-file-name "emacs/packages" my/xdg-data))

@@ -11,7 +11,7 @@
 ;;; Code:
 
 (prilepp/define-gtd-list-type actions
-  :directory "~/notes/horizons/actions/"
+  :directory (expand-file-name "horizons/actions/" prilepp/notes-directory)
   :list-fn prilepp/actions--list-contexts
   :find-fn prilepp/actions-find
   :find-prompt "Context: "
@@ -65,7 +65,7 @@
   "C-c m" "move to context")
 
 (prilepp/define-gtd-list-type proj
-  :directory "~/notes/horizons/proj/"
+  :directory (expand-file-name "horizons/proj/" prilepp/notes-directory)
   :list-fn prilepp/proj--list-projects
   :find-fn prilepp/proj-find
   :find-prompt "Project: "
@@ -78,7 +78,7 @@
   :insert-prompt "Project: ")
 
 (prilepp/define-gtd-list-type aor
-  :directory "~/notes/horizons/aor/"
+  :directory (expand-file-name "horizons/aor/" prilepp/notes-directory)
   :list-fn prilepp/aor--list-aors
   :find-fn prilepp/aor-find
   :find-prompt "AoR: "
@@ -91,7 +91,7 @@
   :insert-prompt "Area: ")
 
 (prilepp/define-gtd-list-type life
-  :directory "~/notes/horizons/life/"
+  :directory (expand-file-name "horizons/life/" prilepp/notes-directory)
   :list-fn prilepp/life--list-entries
   :find-fn prilepp/life-find
   :find-prompt "Life: "
@@ -104,7 +104,7 @@
   :insert-prompt "Life: ")
 
 (prilepp/define-gtd-list-type goals
-  :directory "~/notes/horizons/goals/"
+  :directory (expand-file-name "horizons/goals/" prilepp/notes-directory)
   :list-fn prilepp/goals--list-entries
   :find-fn prilepp/goals-find
   :find-prompt "Goal: "
@@ -117,7 +117,7 @@
   :insert-prompt "Goal: ")
 
 (prilepp/define-gtd-list-type vision
-  :directory "~/notes/horizons/vision/"
+  :directory (expand-file-name "horizons/vision/" prilepp/notes-directory)
   :list-fn prilepp/vision--list-entries
   :find-fn prilepp/vision-find
   :find-prompt "Vision: "
@@ -130,7 +130,7 @@
   :insert-prompt "Vision: ")
 
 (prilepp/define-gtd-list-type agendas
-  :directory "~/notes/agendas/"
+  :directory (expand-file-name "agendas/" prilepp/notes-directory)
   :list-fn prilepp/agendas--list-entries
   :find-fn prilepp/agendas-find
   :find-prompt "Agenda: "
@@ -139,7 +139,7 @@
   :link-word nil)
 
 (prilepp/define-gtd-list-type reference
-  :directory "~/notes/reference/"
+  :directory (expand-file-name "reference/" prilepp/notes-directory)
   :list-fn prilepp/reference--list-entries
   :find-fn prilepp/reference-find
   :find-prompt "Reference: "

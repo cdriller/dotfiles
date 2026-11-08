@@ -171,12 +171,12 @@ included when SHOW-ARCHIVED is non-nil."
              :items ,(lambda () '("Someday"))
              :action ,(lambda (_n) (my/edit-someday-file))
              :new ,(lambda (_n) (my/edit-someday-file))
-             :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "~/notes/someday.org") "Someday")))
+             :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "someday.org" prilepp/notes-directory) "Someday")))
            `(:name "L Waiting" :narrow ?w
              :items ,(lambda () '("Waiting"))
              :action ,(lambda (_n) (my/edit-waiting-for-file))
              :new ,(lambda (_n) (my/edit-waiting-for-file))
-             :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "~/notes/waiting-for.org") "Waiting")))
+             :link ,(lambda (_n) (format "[[file:%s][%s]]" (expand-file-name "waiting-for.org" prilepp/notes-directory) "Waiting")))
            `(:name "L Tickler" :narrow ?t
              :items ,(lambda () '("Tickler"))
              :action ,(lambda (_n) (find-file (prilepp/tickler-ensure-file)))
