@@ -138,6 +138,7 @@ for _, mod in ipairs(plugin_modules) do
 end
 
 require "lsp"
+require "functions"
 
 vim.schedule(function ()
    require "keys".global()
